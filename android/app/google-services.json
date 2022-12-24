@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "407477153077",
+    "project_id": "trackex-c9511",
+    "storage_bucket": "trackex-c9511.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:407477153077:android:1397aa9ff452013542f07c",
+        "android_client_info": {
+          "package_name": "com.trackex"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "407477153077-2apgpv0621d3uc1l2s7mtb897mcrfv6j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABX7rBUIVNi_ZvMPTla5K0ADU2q9nWISc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "407477153077-2apgpv0621d3uc1l2s7mtb897mcrfv6j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
