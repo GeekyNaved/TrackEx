@@ -31,9 +31,16 @@ const Register = ({ navigation }: any) => {
                     style={styles.button}
                     otherProps
                 />
-                <TouchableOpacity  onPress={() => Linking.openURL("https://coolors.co/image-picker")}>
+                <Text style={styles.account}>
+                    <Text>Already have an account?  </Text>
+                    <Text onPress={() => navigation.navigate("Login")} style={styles.signIn}>Sign In</Text>
+                </Text>
+
+
+                <TouchableOpacity onPress={() => Linking.openURL("https://coolors.co/image-picker")}>
                     <Text style={styles.agreement}>Read User License Agreement</Text>
-                </TouchableOpacity> 
+                </TouchableOpacity>
+
             </View>
         </View>
     )
@@ -48,15 +55,22 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         // backgroundColor: 'orange',
-        paddingVertical: verticalScale(50),
+        paddingTop: verticalScale(50),
     },
     button: {
         marginTop: verticalScale(60),
     },
+    account: {
+        textAlign: "center",
+        marginTop: verticalScale(10),
+        color: Colors.black
+    },
+    signIn: {
+        textDecorationLine: "underline"
+    },
     agreement: {
         marginTop: verticalScale(20),
         textAlign: "center",
-        color: Colors.black
     }
 })
 
