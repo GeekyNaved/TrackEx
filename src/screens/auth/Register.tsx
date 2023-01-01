@@ -1,29 +1,28 @@
 import React from 'react'
 import { Text, View, Button, StyleSheet } from 'react-native'
-import { moderateScale, verticalScale } from 'react-native-size-matters'
+import { moderateScale } from 'react-native-size-matters'
 import AuthTextInputField from '../../components/AuthTextInputField'
 import ErrorMessage from '../../components/ErrorMessage'
+import TextInputField from '../../components/TextInputField'
 const Register = ({ navigation }: any) => {
     return (
         <View style={styles.container}>
             <Text>TrackEx</Text>
             <Text style={{ textAlign: 'center' }}>Registeration</Text>
-            <AuthTextInputField
+            <TextInputField
                 placeholder="Enter Your Email"
                 otherProps={false}
             />
-            <ErrorMessage msg='Invalid' />
             <AuthTextInputField
-                placeholder="Enter Your Email"
-                otherProps={false}
+                placeholder="Your password"
             />
-            <ErrorMessage msg='Invalid' />
+            <ErrorMessage msg='Invalid password' />
             <AuthTextInputField
-                placeholder="Password"
-                secureTextEntry
+                placeholder="Confirm password"
             />
-            <ErrorMessage msg='Invalid' />
-            {/* <Button title="Login" onPress={() => navigation.navigate("Login")}>Click</Button> */}
+            <ErrorMessage msg='Invalid password' />
+
+            <Button title="Login" onPress={() => navigation.navigate("Login")} />
         </View>
     )
 }
