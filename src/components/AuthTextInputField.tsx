@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native'
 import { moderateScale, scale, verticalScale } from 'react-native-size-matters'
+import Colors from '../constants/Colors'
 import CustIcon from './CustIcon'
 interface inputFieldProps {
     placeholder: string,
@@ -11,12 +12,13 @@ const AuthTextInputField = ({ placeholder }: inputFieldProps) => {
     return (
         <View style={styles.inputContainer}>
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.icon}>
-                <CustIcon size='large' color="purple" name={showPassword ? "eye-off" : "eye"} />
+                <CustIcon size='large' color={Colors.black} name={showPassword ? "eye-off" : "eye"} />
             </TouchableOpacity>
             <TextInput
                 placeholder={placeholder}
                 style={styles.input}
                 secureTextEntry={showPassword}
+                placeholderTextColor="gray"
             />
         </View>
     )
@@ -29,8 +31,8 @@ const styles = StyleSheet.create({
         marginVertical: verticalScale(10),
     },
     input: {
-        borderWidth: 2,
-        borderRadius: 5,
+        borderWidth: scale(2),
+        borderRadius: scale(10),
         paddingHorizontal: moderateScale(15),
     },
     icon: {

@@ -1,12 +1,12 @@
 import React from 'react'
 import { StyleSheet, TextInput } from 'react-native'
-import { moderateScale, verticalScale } from 'react-native-size-matters'
- interface inputFieldProps {
+import { moderateScale, scale, verticalScale } from 'react-native-size-matters'
+interface inputFieldProps {
     placeholder: string,
     otherProps: any,
- }
+}
 
-const TextInputField  = ({placeholder, ...otherProps}: inputFieldProps)  => {
+const TextInputField = ({ placeholder, ...otherProps }: inputFieldProps) => {
     return (
         <TextInput
             placeholder={placeholder}
@@ -20,8 +20,8 @@ export default TextInputField
 
 const styles = StyleSheet.create({
     input: {
-        borderWidth: 2,
-        borderRadius: 5,
+        borderWidth: scale(2),
+        borderRadius: scale(10),
         paddingHorizontal: moderateScale(15),
         marginVertical: verticalScale(10)
     }

@@ -1,28 +1,40 @@
+import { Link } from '@react-navigation/native'
 import React from 'react'
-import { Text, View, Button, StyleSheet } from 'react-native'
-import { moderateScale } from 'react-native-size-matters'
+import { Text, View, Button, StyleSheet, TouchableOpacity, Linking } from 'react-native'
+import { moderateScale, verticalScale } from 'react-native-size-matters'
 import AuthTextInputField from '../../components/AuthTextInputField'
+import AuthTitle from '../../components/AuthTitle'
+import CustButton from '../../components/CustButton'
 import ErrorMessage from '../../components/ErrorMessage'
 import TextInputField from '../../components/TextInputField'
+import Colors from '../../constants/Colors'
 const Register = ({ navigation }: any) => {
     return (
         <View style={styles.container}>
-            <Text>TrackEx</Text>
-            <Text style={{ textAlign: 'center' }}>Registeration</Text>
-            <TextInputField
-                placeholder="Enter Your Email"
-                otherProps={false}
-            />
-            <AuthTextInputField
-                placeholder="Your password"
-            />
-            <ErrorMessage msg='Invalid password' />
-            <AuthTextInputField
-                placeholder="Confirm password"
-            />
-            <ErrorMessage msg='Invalid password' />
-
-            <Button title="Login" onPress={() => navigation.navigate("Login")} />
+            <AuthTitle title="Registration" />
+            <View style={styles.formContainer}>
+                <TextInputField
+                    placeholder="Enter Your Email"
+                    otherProps={false}
+                />
+                <ErrorMessage msg='Invalid email' />
+                <AuthTextInputField
+                    placeholder="Your password"
+                />
+                <ErrorMessage msg='Invalid password' />
+                <AuthTextInputField
+                    placeholder="Confirm password"
+                />
+                <ErrorMessage msg='Invalid password' />
+                <CustButton title="Sign up"
+                    onPress={() => navigation.navigate("Login")}
+                    style={styles.button}
+                    otherProps
+                />
+                <TouchableOpacity  onPress={() => Linking.openURL("https://coolors.co/image-picker")}>
+                    <Text style={styles.agreement}>Read User License Agreement</Text>
+                </TouchableOpacity> 
+            </View>
         </View>
     )
 }
@@ -30,12 +42,21 @@ const Register = ({ navigation }: any) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: moderateScale(20)
-        // backgroundColor: 'grey',
-        // display: 'flex',
-        // justifyContent: 'center',
-        // alignItems: 'center',
-        // height: verticalScale(800),
+        justifyContent: "center",
+        paddingHorizontal: moderateScale(20),
+        backgroundColor: Colors.white
+    },
+    formContainer: {
+        // backgroundColor: 'orange',
+        paddingVertical: verticalScale(50),
+    },
+    button: {
+        marginTop: verticalScale(60),
+    },
+    agreement: {
+        marginTop: verticalScale(20),
+        textAlign: "center",
+        color: Colors.black
     }
 })
 
