@@ -1,6 +1,5 @@
-import { Link } from '@react-navigation/native'
-import React from 'react'
-import { Text, View, Button, StyleSheet, TouchableOpacity, Linking } from 'react-native'
+import React, { useState } from 'react'
+import { Text, View, StyleSheet, TouchableOpacity, Linking, Alert } from 'react-native'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
 import AuthTextInputField from '../../components/AuthTextInputField'
 import AuthTitle from '../../components/AuthTitle'
@@ -9,6 +8,56 @@ import ErrorMessage from '../../components/ErrorMessage'
 import TextInputField from '../../components/TextInputField'
 import Colors from '../../constants/Colors'
 const Register = ({ navigation }: any) => {
+    const [email, setEmail] = useState("");
+    const [emailError, setEmailError] = useState("");
+    const [password, setPassword] = useState("");
+    const [passwordError, setPasswordError] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [confirmPasswordError, setConfirmPasswordError] = useState("");
+
+    const validEmail = (emailId: string) => {
+        let mailformat = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+        if (emailId.match(mailformat)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    const handleChange = (key: string, value: string) => {
+        if (key === "email") {
+            setEmailError("");
+            setEmail(value);
+        }
+        if (key === "password") {
+            setPasswordError("");
+            setPassword(value.replace(/\s+/g, ""))
+        }
+        if (key === "confirmPassword") {
+            setConfirmPasswordError("");
+            setConfirmPassword(value.replace(/\s+/g, ""));
+        }
+    }
+
+    const onSubmitRegister = () => {
+        if(password.length == 0) {
+            setPasswordError("Password must be of atleast 8 characters")
+        }
+        if(!validEmail(email)){
+            setEmailError("Invalid Email")
+        }
+        if(password !== confirmPassword) {
+            setConfirmPasswordError("Password not matched")
+        }
+        console.log(email, password)
+        if (validEmail(email) && password.length > 0 && password === confirmPassword) {
+
+            console.log(email, password, confirmPassword);
+            Alert.alert('submitted')
+        }
+    }
+
     return (
         <View style={styles.container}>
             <AuthTitle title="Registration" />
@@ -16,19 +65,24 @@ const Register = ({ navigation }: any) => {
                 <TextInputField
                     placeholder="Enter Your Email"
                     otherProps={false}
+                    keyboardType="email-address"
+                    onChangeText={handleChange.bind(this, "email")}
                 />
-                <ErrorMessage msg='Invalid email' />
+                {emailError ? <ErrorMessage msg={emailError} /> : null}
                 <AuthTextInputField
                     placeholder="Your password"
+                    onChangeText={handleChange.bind(this, "password")}
                 />
-                <ErrorMessage msg='Invalid password' />
+                {passwordError ? <ErrorMessage msg={passwordError} /> : null}
                 <AuthTextInputField
                     placeholder="Confirm password"
+                    onChangeText={handleChange.bind(this, "confirmPassword")}
                 />
-                <ErrorMessage msg='Invalid password' />
-                <CustButton title="Sign up"
-                    onPress={() => navigation.navigate("Login")}
+                {confirmPasswordError ? <ErrorMessage msg={confirmPasswordError} /> : null}
+                <CustButton
+                    title="Register"
                     style={styles.button}
+                    onPress={onSubmitRegister}
                     otherProps
                 />
                 <Text style={styles.account}>
