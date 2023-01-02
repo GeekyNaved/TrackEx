@@ -43,22 +43,22 @@ const Register = ({ navigation }: any) => {
     const onSubmitRegister = () => {
         if (email.length == 0) {
             setEmailError("No email provided");
-            return false;
+            // return false;
         }
-        if (!validEmail(email)) {
+        else if (!validEmail(email)) {
             setEmailError("Invalid Email");
         }
         if (password.length == 0) {
             setPasswordError("No password provided");
         }
-        if (password.length > 8 || password.length < 8) {
+        else if (password.length != 8) {
             setPasswordError("Password must be of atleast 8 characters")
         }
         if (password !== confirmPassword) {
             setConfirmPasswordError("Password not matched")
         }
         // console.log(email, password)
-        if (validEmail(email) && password.length > 0 && password === confirmPassword) {
+        if (validEmail(email) && (password.length == 8 && password === confirmPassword)) {
             console.log(email, password, confirmPassword);
             Alert.alert('submitted')
         }
