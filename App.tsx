@@ -15,13 +15,17 @@ import {
   Text,
   View,
 } from 'react-native';
+import { Provider } from 'react-redux';
+import store from './src/Redux/store';
 import MainNavigation from './src/Router/Stack/MainStack';
 
 const App = () => {
 
 
   return (
-    <MainNavigation />
+    <Provider store={store}>
+      <MainNavigation />
+    </Provider>
   );
 };
 

@@ -6,9 +6,10 @@ import CustIcon from './CustIcon'
 interface inputFieldProps {
     placeholder: string,
     onChangeText: any,
+    otherProps: any,
 }
 
-const AuthTextInputField = ({ placeholder, onChangeText }: inputFieldProps) => {
+const AuthTextInputField = ({ placeholder, onChangeText, ...otherProps}: inputFieldProps) => {
     const [showPassword, setShowPassword] = useState(true)
     return (
         <View style={styles.inputContainer}>
@@ -21,6 +22,7 @@ const AuthTextInputField = ({ placeholder, onChangeText }: inputFieldProps) => {
                 secureTextEntry={showPassword}
                 placeholderTextColor="gray"
                 onChangeText={onChangeText}
+                {...otherProps}
             />
         </View>
     )

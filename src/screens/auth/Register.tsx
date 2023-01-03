@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity, Linking, Alert } from 'react-native'
 import { moderateScale, verticalScale } from 'react-native-size-matters'
+import { useDispatch, useSelector } from 'react-redux'
 import AuthTextInputField from '../../components/AuthTextInputField'
 import AuthTitle from '../../components/AuthTitle'
 import CustButton from '../../components/CustButton'
 import ErrorMessage from '../../components/ErrorMessage'
 import TextInputField from '../../components/TextInputField'
 import Colors from '../../constants/Colors'
+import { registerInitiate } from '../../Redux/Actions'
 const Register = ({ navigation }: any) => {
     const [email, setEmail] = useState("");
     const [emailError, setEmailError] = useState("");
@@ -14,6 +16,16 @@ const Register = ({ navigation }: any) => {
     const [passwordError, setPasswordError] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [confirmPasswordError, setConfirmPasswordError] = useState("");
+    const { currentUser }: any = useSelector<any>(state => state)
+
+    const dispatch: any = useDispatch();
+
+    useEffect(() => {
+        console.log('currentUser', currentUser)
+        if (currentUser)
+            navigation.navigate("MainTab");
+    }, [currentUser])
+
 
     const validEmail = (emailId: string) => {
         let mailformat = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
@@ -57,10 +69,15 @@ const Register = ({ navigation }: any) => {
         if (password !== confirmPassword) {
             setConfirmPasswordError("Password not matched")
         }
-        // console.log(email, password)
+        console.log(email, password)
         if (validEmail(email) && (password.length == 8 && password === confirmPassword)) {
             console.log(email, password, confirmPassword);
-            Alert.alert('submitted')
+            let displayName = "Dummy"
+            dispatch(registerInitiate(email, password, displayName));
+            setEmail("")
+            setPassword("")
+            setConfirmPassword("")
+            // Alert.alert('submitted')
         }
     }
 
@@ -71,18 +88,23 @@ const Register = ({ navigation }: any) => {
                 <TextInputField
                     placeholder="Enter Your Email"
                     otherProps={false}
+                    value={email}
                     keyboardType="email-address"
                     onChangeText={handleChange.bind(this, "email")}
                 />
                 {emailError ? <ErrorMessage msg={emailError} /> : null}
                 <AuthTextInputField
                     placeholder="Your password"
+                    value={password}
                     onChangeText={handleChange.bind(this, "password")}
+                    otherProps={false}
                 />
                 {passwordError ? <ErrorMessage msg={passwordError} /> : null}
                 <AuthTextInputField
                     placeholder="Confirm password"
+                    value={confirmPassword}
                     onChangeText={handleChange.bind(this, "confirmPassword")}
+                    otherProps={false}
                 />
                 {confirmPasswordError ? <ErrorMessage msg={confirmPasswordError} /> : null}
                 <CustButton
