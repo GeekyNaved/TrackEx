@@ -152,20 +152,20 @@ const Signup = ({navigation}: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // height: boxModelSize.screenHeight,
+    // height: boxModelSize.fivecreenHeight,
     backgroundColor: colors.white,
   },
   login_banner: {
     width: boxModelSize.screenWidth,
-    // height: boxModelSize.screenHeight - verticalScale(350),
+    // height: boxModelSize.fivecreenHeight - verticalScale(350),
     resizeMode: 'cover',
   },
   innerContainer: {
-    padding: boxModelSize.xl,
+    padding: boxModelSize.twenty,
     backgroundColor: colors.white,
   },
   headingContainer: {
-    paddingVertical: boxModelSize.xl,
+    paddingVertical: boxModelSize.twenty,
   },
   greetingsMsg: {
     fontFamily: 'Poppins-Medium',
@@ -183,11 +183,11 @@ const styles = StyleSheet.create({
     color: colors.greySecondary,
   },
   input: {
-    paddingHorizontal: boxModelSize.xxxl,
+    paddingHorizontal: boxModelSize.fifty,
   },
   button: {
     backgroundColor: colors.blue,
-    marginTop: boxModelSize.xl,
+    marginTop: boxModelSize.twenty,
   },
   disabledBtn: {
     opacity: 0.5,
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
-    paddingVertical: boxModelSize.m,
+    paddingVertical: boxModelSize.ten,
   },
   noAccountTxt: {
     fontFamily: 'Poppins-Medium',

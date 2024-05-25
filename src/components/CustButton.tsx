@@ -52,14 +52,14 @@ const styles = StyleSheet.create({
     borderRadius: boxModelSize.four,
     borderWidth: 1,
     borderColor: colors.blue,
-    paddingVertical: boxModelSize.m,
+    paddingVertical: boxModelSize.ten,
   },
   lightBtn: {
     backgroundColor: colors.white,
     borderRadius: boxModelSize.four,
     borderWidth: 1,
     borderColor: colors.blue,
-    paddingVertical: boxModelSize.m,
+    paddingVertical: boxModelSize.ten,
     fontFamily: 'Poppins-Medium',
   },
   darkBtnTxt: {

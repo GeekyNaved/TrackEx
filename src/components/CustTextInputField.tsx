@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
   StyleSheet,
@@ -80,16 +79,16 @@ const styles = StyleSheet.create({
     // fontWeight: '600',
     borderWidth: boxModelSize.one,
     borderRadius: boxModelSize.four,
-    paddingVertical: boxModelSize.m,
-    paddingHorizontal: boxModelSize.l,
+    paddingVertical: boxModelSize.ten,
+    paddingHorizontal: boxModelSize.fifteen,
     borderColor: colors.gray,
   },
   verifyBtn: {
     position: 'absolute',
     right: 0,
     justifyContent: 'center',
-    paddingHorizontal: boxModelSize.m,
-    paddingVertical: boxModelSize.xxl,
+    paddingHorizontal: boxModelSize.ten,
+    paddingVertical: boxModelSize.twentyFive,
     zIndex: 2,
   },
   verifyTxt: {
@@ -105,17 +104,17 @@ const styles = StyleSheet.create({
   icon: {
     position: 'absolute',
     right: 0,
-    paddingVertical: boxModelSize.m,
-    paddingHorizontal: boxModelSize.m,
+    paddingVertical: boxModelSize.ten,
+    paddingHorizontal: boxModelSize.ten,
     zIndex: 2,
     // paddingVertical: Platform.OS === 'android' ? scale(8) : null,
   },
   countryCode: {
     position: 'absolute',
     left: 0,
-    paddingHorizontal: boxModelSize.m,
+    paddingHorizontal: boxModelSize.ten,
     zIndex: 2,
-    paddingVertical: boxModelSize.m,
+    paddingVertical: boxModelSize.ten,
     // paddingVertical: Platform.OS === 'android' ? scale(8) : null,
   },
   codeTxt: {

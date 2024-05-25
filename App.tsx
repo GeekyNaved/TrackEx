@@ -8,7 +8,7 @@ function App(): React.JSX.Element {
   useEffect(() => {
     const Timeout = setTimeout(() => {
       setVisible(false);
-    }, 3000);
+    }, 1000);
 
     return () => clearTimeout(Timeout);
   }, []);
