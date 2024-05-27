@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 // Income and Expense Card: used in home screen
 import AmountWithRupee from './AmountWithRupee';
 import {StyleSheet, Text, View} from 'react-native';
@@ -23,7 +24,7 @@ const MoneyCard: React.FC<MoneyCardProps> = ({title, amount}) => {
           : {backgroundColor: colors.red},
         styles.container,
       ]}>
-      <View style={styles.subContainer}>
+      <View style={styles.iconContainer}>
         {title == 'Income' ? (
           <ArrowDownTrayIcon color={colors.green} size={boxModelSize.twenty} />
         ) : (
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: boxModelSize.twentyTwo,
     paddingVertical: boxModelSize.fifteen,
   },
-  subContainer: {
+  iconContainer: {
     padding: boxModelSize.five,
     backgroundColor: colors.white,
     borderRadius: boxModelSize.five,
