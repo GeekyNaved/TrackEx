@@ -1,5 +1,5 @@
-/* eslint-disable react/react-in-jsx-scope */
 // Income and Expense Card: used in home screen
+import React from 'react';
 import AmountWithRupee from './AmountWithRupee';
 import {StyleSheet, Text, View} from 'react-native';
 import {

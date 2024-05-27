@@ -1,3 +1,4 @@
+import React from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
 import AccountBalanceHome from '../../components/AccountBalanceHome';
 import boxModelSize from '../../constants/boxModel';
@@ -5,7 +6,6 @@ import TransactionCard from '../../components/TransactionCard';
 import {dummyTransaction} from '../../constants/dummyData';
 import colors from '../../constants/colors';
 import {fontSize} from '../../constants/fontSize';
-
 const Home = () => {
   return (
     <View style={styles.container}>
