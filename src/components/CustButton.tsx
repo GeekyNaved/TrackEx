@@ -11,11 +11,11 @@ import boxModelSize from '../constants/boxModel';
 
 interface CustButtonProps {
   title: string;
-  onPress: any;
-  style: object;
-  variant: string;
-  btnTxtStyles: object;
-  otherProps: any;
+  onPress?: any;
+  style?: object;
+  variant?: string;
+  btnTxtStyles?: object;
+  otherProps?: any;
 }
 const CustButton = ({
   isLoading,

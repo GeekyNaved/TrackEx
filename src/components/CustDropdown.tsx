@@ -58,7 +58,7 @@ export default CustDropdown;
 
 const styles = StyleSheet.create({
   label: {
-    fontSize: fontSize.h5,
+    fontSize: fontSize.h6,
     color: colors.black,
     fontWeight: '500',
     marginBottom: boxModelSize.five,

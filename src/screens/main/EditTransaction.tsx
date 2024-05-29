@@ -1,19 +1,37 @@
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import boxModelSize from '../../constants/boxModel';
 import CustTextInputField from '../../components/CustTextInputField';
 import CustButton from '../../components/CustButton';
 import CustDropdown from '../../components/CustDropdown';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {
   dummyCategoryExpense,
   dummyCategoryIncome,
 } from '../../constants/dummyData';
+import dayjs from 'dayjs';
+import colors from '../../constants/colors';
 const EditTransaction = ({route}) => {
   const [amount, setAmount] = useState('');
+  const [amountError, setAmountError] = useState('');
   const [notes, setNotes] = useState('');
   const [date, setDate] = useState('');
   const [focusedField, setFocusedField] = useState(null);
-  // const {type, category, notes, amount, date} = route.params;
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [disableBtn, setDisableBtn] = useState(false);
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = date => {
+    const selectedDate = dayjs(date).format('DD/MM/YYYY');
+    setDate(selectedDate);
+    hideDatePicker();
+  };
   const {
     type: initialType,
     category: initialCategory,
@@ -41,16 +59,28 @@ const EditTransaction = ({route}) => {
     }
   };
 
+  // validation: check amount should not be empty
+  useEffect(() => {
+    if (amount?.length === 0) {
+      setDisableBtn(true);
+      setAmountError('Field should not be empty');
+    } else {
+      setAmountError('');
+      setDisableBtn(false);
+    }
+  }, [amount]);
+
+  // set props value (default value)
   useEffect(() => {
     setAmount(initialAmount.toString());
     setNotes(initialNotes);
-    setDate(initialDate);
+    setDate(dayjs(initialDate).format('DD/MM/YYYY'));
   }, []);
   return (
     <ScrollView style={styles.container}>
       <CustTextInputField
         label="Amount"
-        style={styles.input}
+        containerStyles={styles.input}
         placeholder="Enter Amount"
         value={amount}
         onChangeText={handleChange.bind(this, 'amount')}
@@ -58,11 +88,11 @@ const EditTransaction = ({route}) => {
         onFocus={() => handleFocus('amount')}
         onBlur={handleBlur}
         keyboardType="numeric"
-        // errorMsg={mobileNumError}
+        errorMsg={amountError}
       />
       <CustTextInputField
         label="Notes"
-        style={styles.input}
+        containerStyles={styles.input}
         placeholder="Enter Notes"
         value={notes}
         onChangeText={handleChange.bind(this, 'notes')}
@@ -82,25 +112,43 @@ const EditTransaction = ({route}) => {
           }
         />
       </View>
-      <CustTextInputField
-        label="Date"
-        style={styles.input}
-        placeholder="Enter Date"
-        value={date}
-        onChangeText={handleChange.bind(this, 'date')}
-        isFocused={focusedField === 'date'}
-        onFocus={() => handleFocus('date')}
-        onBlur={handleBlur}
-        // errorMsg={mobileNumError}
+      <TouchableOpacity onPress={showDatePicker}>
+        <CustTextInputField
+          label="Date"
+          containerStyles={styles.input}
+          placeholder="Enter Date"
+          value={date}
+          onChangeText={handleChange.bind(this, 'date')}
+          isFocused={focusedField === 'date'}
+          onFocus={() => handleFocus('date')}
+          onBlur={handleBlur}
+          disabled
+          // errorMsg={mobileNumError}
+        />
+      </TouchableOpacity>
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode="date"
+        date={dayjs(initialDate).toDate()}
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
       />
-      <CustButton
-        // disabled={disableBtn}
-        // isLoading={isLoading}
-        title="Save"
-        // style={[styles.button, disableBtn && styles.disabledBtn]}
-        // onPress={onSubmitRegister}
-        otherProps
-      />
+      <View style={styles.btnContainer}>
+        <CustButton
+          // isLoading={isLoading}
+          title="Delete"
+          style={styles.btnDelete}
+          // onPress={onSubmitRegister}
+        />
+        <CustButton
+          disabled={disableBtn}
+          // isLoading={isLoading}
+          title="Save"
+          style={[styles.btnSave, disableBtn && styles.disabledBtn]}
+          // onPress={onSubmitRegister}
+          otherProps
+        />
+      </View>
     </ScrollView>
   );
 };
@@ -108,10 +156,29 @@ const EditTransaction = ({route}) => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: boxModelSize.fifteen,
-    paddingVertical: boxModelSize.ten,
+    // paddingVertical: boxModelSize.ten,
   },
   input: {
-    marginBottom: boxModelSize.twenty,
+    marginTop: boxModelSize.twenty,
+  },
+  btnContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: boxModelSize.twenty,
+    marginTop: boxModelSize.ten,
+  },
+  btnDelete: {
+    flex: 1,
+    backgroundColor: colors.red,
+    borderColor: colors.red,
+  },
+  btnSave: {
+    flex: 1,
+    backgroundColor: colors.green,
+    borderColor: colors.green,
+  },
+  disabledBtn: {
+    opacity: 0.5,
   },
 });
 

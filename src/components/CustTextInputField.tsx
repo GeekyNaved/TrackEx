@@ -15,6 +15,7 @@ interface inputFieldProps {
   placeholder: string;
   onChangeText: any;
   style: object;
+  containerStyles?: object;
   isFocused: boolean;
   mobileField: boolean;
   otherProps: any;
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
     borderColor: colors.gray,
   },
   label: {
-    fontSize: fontSize.h5,
+    fontSize: fontSize.h6,
     color: colors.black,
     fontWeight: '500',
     marginBottom: boxModelSize.five,

@@ -10,6 +10,7 @@ import colors from '../constants/colors';
 import AmountWithRupee from './AmountWithRupee';
 import {fontSize} from '../constants/fontSize';
 import {NavigationProp, ParamListBase} from '@react-navigation/native';
+import dayjs from 'dayjs';
 interface TransactionCardProps {
   navigation: NavigationProp<ParamListBase>;
   type: string;
@@ -36,7 +37,17 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
     setOpen(false);
   };
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate('EditTransaction', {
+          type,
+          category,
+          notes,
+          amount,
+          date,
+        })
+      }
+      style={styles.container}>
       <View style={styles.leftInner}>
         <View style={styles.iconContainer}>
           {type == 'income' ? (
@@ -56,26 +67,19 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
       <View style={styles.rightInner}>
         <View>
           <AmountWithRupee amount={amount} customStyle={styles.amount} />
-          <Text style={styles.date}>Date: {date}</Text>
+          <Text style={styles.date}>
+            Date: {dayjs(date).format('DD/MM/YY')}
+          </Text>
         </View>
         {/* <EditTransactionDialog isOTexten={open} onClose={handleClose}> */}
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate('EditTransaction', {
-              type,
-              category,
-              notes,
-              amount,
-              date,
-            })
-          }>
+        <View>
           <View>
             <PencilIcon color={colors.black} size={boxModelSize.twenty} />
           </View>
-        </TouchableOpacity>
+        </View>
         {/* </EditTransactionDialog> */}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
