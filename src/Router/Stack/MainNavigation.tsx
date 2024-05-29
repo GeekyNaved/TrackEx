@@ -3,6 +3,8 @@ import React from 'react';
 import MainTab from '../Tab/MainTab';
 import {StackContainer, StackScreen} from '../Utils/StackContainer';
 import AuthStack from './AuthStack';
+import EditTransaction from '../../screens/main/EditTransaction';
+import colors from '../../constants/colors';
 
 const MainNavigation = () => {
   // const token = null;
@@ -23,6 +25,28 @@ const MainNavigation = () => {
             options={{headerShown: false}}
           />
         )}
+        <StackScreen.Screen
+          name="EditTransaction"
+          component={EditTransaction}
+          options={({route}) => {
+            const transactionType = route?.params?.type; // showing transaction type in header
+            // capitalize all first letter of a word
+            const type = transactionType
+              .toLowerCase()
+              .replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
+            return {
+              title: `Edit ${type}`,
+              headerTintColor: colors.black,
+              headerTitleAlign: 'center',
+              headerTitleStyle: {
+                textTransform: 'capitalize',
+              },
+              headerStyle: {
+                backgroundColor: colors.green,
+              },
+            };
+          }}
+        />
       </StackContainer>
     </NavigationContainer>
   );

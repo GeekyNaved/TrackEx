@@ -9,7 +9,9 @@ import boxModelSize from '../constants/boxModel';
 import colors from '../constants/colors';
 import AmountWithRupee from './AmountWithRupee';
 import {fontSize} from '../constants/fontSize';
+import {NavigationProp, ParamListBase} from '@react-navigation/native';
 interface TransactionCardProps {
+  navigation: NavigationProp<ParamListBase>;
   type: string;
   category: string;
   notes: string;
@@ -17,6 +19,7 @@ interface TransactionCardProps {
   date: string;
 }
 const TransactionCard: React.FC<TransactionCardProps> = ({
+  navigation,
   type,
   category,
   notes,
@@ -52,17 +55,21 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
       </View>
       <View style={styles.rightInner}>
         <View>
-          <AmountWithRupee
-            amount={amount}
-            customStyle={
-              type == 'income' ? styles.amountGreen : styles.amountRed
-            }
-          />
+          <AmountWithRupee amount={amount} customStyle={styles.amount} />
           <Text style={styles.date}>Date: {date}</Text>
         </View>
         {/* <EditTransactionDialog isOTexten={open} onClose={handleClose}> */}
-        <TouchableOpacity onPress={handleClickOpen}>
-          <View style={styles.editContainer}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('EditTransaction', {
+              type,
+              category,
+              notes,
+              amount,
+              date,
+            })
+          }>
+          <View>
             <PencilIcon color={colors.black} size={boxModelSize.twenty} />
           </View>
         </TouchableOpacity>
@@ -78,9 +85,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    // color: colors.white,
-    // borderWidth: 1,
-    // borderColor: colors.gray,
     backgroundColor: colors.white,
     borderRadius: boxModelSize.ten,
     paddingHorizontal: boxModelSize.ten,
@@ -106,7 +110,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   category: {
-    fontWeight: '500',
+    fontWeight: 'bold',
+    color: colors.black,
   },
   notes: {
     fontSize: fontSize.p,
@@ -118,14 +123,11 @@ const styles = StyleSheet.create({
     gap: boxModelSize.five,
   },
   date: {
-    fontWeight: '500',
     fontSize: fontSize.p,
   },
-  amountGreen: {
-    color: colors.green,
-  },
-  amountRed: {
-    color: colors.red,
+  amount: {
+    color: colors.black,
+    fontWeight: 'bold',
   },
 });
 

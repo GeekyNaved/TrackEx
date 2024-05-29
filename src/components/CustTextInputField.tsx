@@ -9,18 +9,22 @@ import {
 import boxModelSize from '../constants/boxModel';
 import colors from '../constants/colors';
 import {fontSize} from '../constants/fontSize';
-// import CustIcon from './CustIcon'
 interface inputFieldProps {
+  label: string;
+  value: string;
   placeholder: string;
   onChangeText: any;
   style: object;
+  isFocused: boolean;
   mobileField: boolean;
   otherProps: any;
 }
 
 const CustTextInputField = ({
+  label,
   containerStyles,
   placeholder,
+  value,
   onChangeText,
   mobileField,
   isFocused,
@@ -34,6 +38,7 @@ const CustTextInputField = ({
 }: inputFieldProps) => {
   return (
     <View style={containerStyles}>
+      <Text style={styles.label}>{label}</Text>
       {verifyField ? (
         <TouchableOpacity onPress={onVerifyPress} style={styles.verifyBtn}>
           <Text style={styles.verifyTxt}>Verify</Text>
@@ -44,6 +49,7 @@ const CustTextInputField = ({
         </View>
       ) : null}
       <TextInput
+        value={value}
         placeholder={placeholder}
         style={[
           styles.input,
@@ -82,6 +88,12 @@ const styles = StyleSheet.create({
     paddingVertical: boxModelSize.ten,
     paddingHorizontal: boxModelSize.fifteen,
     borderColor: colors.gray,
+  },
+  label: {
+    fontSize: fontSize.h5,
+    color: colors.black,
+    fontWeight: '500',
+    marginBottom: boxModelSize.five,
   },
   verifyBtn: {
     position: 'absolute',

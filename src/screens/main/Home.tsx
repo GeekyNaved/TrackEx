@@ -6,7 +6,10 @@ import TransactionCard from '../../components/TransactionCard';
 import {dummyTransaction} from '../../constants/dummyData';
 import colors from '../../constants/colors';
 import {fontSize} from '../../constants/fontSize';
-const Home = () => {
+import {NavigationProp, ParamListBase} from '@react-navigation/native';
+const Home: React.FC<{navigation: NavigationProp<ParamListBase>}> = ({
+  navigation,
+}) => {
   return (
     <View style={styles.container}>
       <AccountBalanceHome />
@@ -17,6 +20,7 @@ const Home = () => {
         renderItem={({item}) => {
           return (
             <TransactionCard
+              navigation={navigation}
               type={item.type}
               category={item.category}
               notes={item.notes}
