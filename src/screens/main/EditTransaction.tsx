@@ -11,6 +11,7 @@ import {
 } from '../../constants/dummyData';
 import dayjs from 'dayjs';
 import colors from '../../constants/colors';
+import ConfirmationModal from '../../components/ConfirmationModal';
 const EditTransaction = ({route}) => {
   const [amount, setAmount] = useState('');
   const [amountError, setAmountError] = useState('');
@@ -19,6 +20,7 @@ const EditTransaction = ({route}) => {
   const [focusedField, setFocusedField] = useState(null);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [disableBtn, setDisableBtn] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -99,7 +101,6 @@ const EditTransaction = ({route}) => {
         isFocused={focusedField === 'notes'}
         onFocus={() => handleFocus('notes')}
         onBlur={handleBlur}
-        // errorMsg={mobileNumError}
       />
       <View style={styles.input}>
         <CustDropdown
@@ -123,7 +124,6 @@ const EditTransaction = ({route}) => {
           onFocus={() => handleFocus('date')}
           onBlur={handleBlur}
           disabled
-          // errorMsg={mobileNumError}
         />
       </TouchableOpacity>
       <DateTimePickerModal
@@ -138,7 +138,7 @@ const EditTransaction = ({route}) => {
           // isLoading={isLoading}
           title="Delete"
           style={styles.btnDelete}
-          // onPress={onSubmitRegister}
+          onPress={() => setDeleteModal(true)}
         />
         <CustButton
           disabled={disableBtn}
@@ -147,6 +147,14 @@ const EditTransaction = ({route}) => {
           style={[styles.btnSave, disableBtn && styles.disabledBtn]}
           // onPress={onSubmitRegister}
           otherProps
+        />
+        <ConfirmationModal
+          message="Are you sure you want to delete this transaction?"
+          visible={deleteModal}
+          onClose={() => setDeleteModal(false)}
+          onLogout={() => setDeleteModal(false)}
+          leftBtnTitle="Yes"
+          rightBtnTitle="No"
         />
       </View>
     </ScrollView>
@@ -165,7 +173,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     gap: boxModelSize.twenty,
-    marginTop: boxModelSize.ten,
+    marginTop: boxModelSize.thirty,
   },
   btnDelete: {
     flex: 1,
