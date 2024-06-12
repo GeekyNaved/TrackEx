@@ -9,7 +9,7 @@ import {
   TagIcon,
 } from 'react-native-heroicons/outline';
 import Transactions from '../../screens/main/Transactions';
-import Add from '../../screens/main/Add';
+import AddTransaction from '../../screens/main/AddTransaction';
 import Categories from '../../screens/main/Categories';
 import Settings from '../../screens/main/Settings';
 import Home from '../../screens/main/Home';
@@ -41,7 +41,7 @@ const MainTab = () => {
             ) : (
               <BanknotesIcon color={colors.black} size={scale(25)} />
             );
-          } else if (route.name === 'Add') {
+          } else if (route.name === 'AddTransaction') {
             iconName = focused ? (
               <PlusIcon color={colors.blue} size={scale(25)} />
             ) : (
@@ -70,7 +70,11 @@ const MainTab = () => {
         component={Transactions}
         options={{headerShown: false}}
       />
-      <Tab.Screen name="Add" component={Add} options={{headerShown: false}} />
+      <Tab.Screen
+        name="AddTransaction"
+        component={AddTransaction}
+        options={{headerShown: false}}
+      />
       <Tab.Screen
         name="Categories"
         component={Categories}
