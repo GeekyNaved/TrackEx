@@ -78,7 +78,16 @@ const MainTab = () => {
       <Tab.Screen
         name="Categories"
         component={Categories}
-        options={{headerShown: false}}
+        options={{
+          headerTintColor: colors.black,
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            textTransform: 'capitalize',
+          },
+          headerStyle: {
+            backgroundColor: colors.green,
+          },
+        }}
       />
       <Tab.Screen
         name="Settings"
