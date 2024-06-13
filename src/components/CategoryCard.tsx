@@ -1,30 +1,25 @@
 import React from 'react';
-import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {PencilIcon, TrashIcon} from 'react-native-heroicons/outline';
 import boxModelSize from '../constants/boxModel';
 import colors from '../constants/colors';
 interface CategoryCardProps {
-  id: number;
   category: string;
+  onEdit: () => void;
   onDelete: () => void;
 }
-const CategoryCard: React.FC<CategoryCardProps> = ({id, category, onDelete}) => {
-  // const [open, setOpen] = useState(false);
-
-  // const handleClickOpen = () => {
-  //   // console.log('name', name)
-  //   setOpen(true);
-  // };
-  // const handleClose = () => {
-  //   setOpen(false);
-  // };
+const CategoryCard: React.FC<CategoryCardProps> = ({
+  category,
+  onEdit,
+  onDelete,
+}) => {
   return (
     <View style={styles.container}>
       <View style={styles.categoryNotesContainer}>
         <Text style={styles.category}>{category}</Text>
       </View>
       <View style={styles.rightInner}>
-        <TouchableOpacity onPress={() => Alert.alert('Edit')}>
+        <TouchableOpacity onPress={onEdit}>
           <PencilIcon color={colors.black} size={boxModelSize.twenty} />
         </TouchableOpacity>
 
