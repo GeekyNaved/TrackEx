@@ -1,17 +1,21 @@
 import React, {useState} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, FlatList} from 'react-native';
 import Modal from 'react-native-modal';
 import CustTextInputField from '../../components/CustTextInputField';
 import boxModelSize from '../../constants/boxModel';
 import colors from '../../constants/colors';
 import CustButton from '../../components/CustButton';
 import {fontSize} from '../../constants/fontSize';
+import {dummyCategoryIncome} from '../../constants/dummyData';
+import CategoryCard from '../../components/CategoryCard';
+import ConfirmationModal from '../../components/ConfirmationModal';
 
 const CategoryIncome = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [incomeName, setIncomeName] = useState('');
   const [focusedField, setFocusedField] = useState(null);
   const [disableBtn, setDisableBtn] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -29,8 +33,33 @@ const CategoryIncome = () => {
       setIncomeName(value.replace(/\s+/g, ' '));
     }
   };
+  const handleDelete = (value: number) => {
+    console.log('value', value);
+    setDeleteModal(true);
+  };
   return (
-    <View style={{flex: 1, position: 'relative'}}>
+    <View style={{flex: 1}}>
+      <FlatList
+        data={dummyCategoryIncome}
+        keyExtractor={item => item._id.toString()} // Assuming each item has a unique `id`
+        renderItem={({item}) => {
+          return (
+            <CategoryCard
+              id={item._id}
+              category={item.value}
+              onDelete={() => handleDelete(item._id)}
+            />
+          );
+        }}
+      />
+      <ConfirmationModal
+        message="Are you sure you want to delete this category?"
+        visible={deleteModal}
+        onClose={() => setDeleteModal(false)}
+        onConfirm={() => setDeleteModal(false)}
+        leftBtnTitle="Yes"
+        rightBtnTitle="No"
+      />
       <CustButton
         style={styles.addBtn}
         btnTxtStyles={styles.addBtnTxt}

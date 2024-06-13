@@ -143,7 +143,7 @@ const AddTransaction = ({route}) => {
         message="Are you sure you want to delete this transaction?"
         visible={deleteModal}
         onClose={() => setDeleteModal(false)}
-        onLogout={() => setDeleteModal(false)}
+        onConfirm={() => setDeleteModal(false)}
         leftBtnTitle="Yes"
         rightBtnTitle="No"
       />

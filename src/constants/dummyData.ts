@@ -109,32 +109,39 @@ export const dummyCategoryWithTotalAmount = [
 ];
 export const dummyCategoryExpense = [
   {
+    _id: 1,
     label: 'Food',
     value: 'Food',
   },
   {
+    _id: 2,
     label: 'Bills',
     value: 'Bills',
   },
   {
+    _id: 3,
     label: 'Mutual Funds',
     value: 'Mutual Funds',
   },
   {
+    _id: 4,
     label: 'Shopping',
     value: 'Shopping',
   },
 ];
 export const dummyCategoryIncome = [
   {
+    _id: 1,
     label: 'Full time job',
     value: 'Full time job',
   },
   {
+    _id: 2,
     label: 'Freelancing',
     value: 'Freelancing',
   },
   {
+    _id: 3,
     label: 'Business',
     value: 'Business',
   },

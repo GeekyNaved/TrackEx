@@ -10,7 +10,7 @@ const ConfirmationModal = ({
   leftBtnTitle,
   rightBtnTitle,
   onClose,
-  onLogout,
+  onConfirm,
 }) => {
   return (
     <Modal
@@ -22,7 +22,7 @@ const ConfirmationModal = ({
         <View style={styles.modal}>
           <Text style={styles.title}>{message}</Text>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={onLogout}>
+            <TouchableOpacity style={styles.button} onPress={onConfirm}>
               <Text style={styles.buttonText}>{leftBtnTitle}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={onClose}>
