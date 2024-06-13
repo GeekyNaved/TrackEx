@@ -187,8 +187,8 @@ const styles = StyleSheet.create({
   },
   btnSave: {
     marginTop: boxModelSize.thirty,
-    backgroundColor: colors.green,
-    borderColor: colors.green,
+    backgroundColor: colors.black,
+    borderColor: colors.black,
   },
   disabledBtn: {
     opacity: 0.5,

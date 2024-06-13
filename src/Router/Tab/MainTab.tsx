@@ -73,7 +73,17 @@ const MainTab = () => {
       <Tab.Screen
         name="AddTransaction"
         component={AddTransaction}
-        options={{headerShown: false}}
+        options={{
+          title: 'Add',
+          headerTintColor: colors.black,
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            textTransform: 'capitalize',
+          },
+          headerStyle: {
+            backgroundColor: colors.green,
+          },
+        }}
       />
       <Tab.Screen
         name="Categories"
