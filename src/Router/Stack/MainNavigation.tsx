@@ -5,6 +5,8 @@ import {StackContainer, StackScreen} from '../Utils/StackContainer';
 import AuthStack from './AuthStack';
 import EditTransaction from '../../screens/main/EditTransaction';
 import colors from '../../constants/colors';
+import PrivacyPolicy from '../../screens/main/PrivacyPolicy';
+import TermsOfUse from '../../screens/main/TermsOfUse';
 
 const MainNavigation = () => {
   // const token = null;
@@ -45,6 +47,30 @@ const MainNavigation = () => {
                 backgroundColor: colors.green,
               },
             };
+          }}
+        />
+        <StackScreen.Screen
+          name="TermsOfUse"
+          component={TermsOfUse}
+          options={{
+            headerTitle: 'Terms of Use',
+            headerTitleAlign: 'center',
+            headerShadowVisible: false,
+            headerStyle: {
+              backgroundColor: colors.green,
+            },
+          }}
+        />
+        <StackScreen.Screen
+          name="PrivacyPolicy"
+          component={PrivacyPolicy}
+          options={{
+            headerTitle: 'Privacy Policies',
+            headerTitleAlign: 'center',
+            headerShadowVisible: false,
+            headerStyle: {
+              backgroundColor: colors.green,
+            },
           }}
         />
       </StackContainer>
