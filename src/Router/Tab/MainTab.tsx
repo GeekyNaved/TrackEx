@@ -25,7 +25,7 @@ const MainTab = () => {
       // }}
       screenOptions={({route}) => ({
         tabBarActiveTintColor: colors.blue,
-        tabBarLabelStyle: {fontFamily: 'Poppins-Medium'},
+        // tabBarLabelStyle: {fontFamily: 'Poppins-Medium'},
         tabBarIcon: ({focused, color, size}) => {
           let iconName;
 

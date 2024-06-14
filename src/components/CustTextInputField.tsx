@@ -80,7 +80,7 @@ export default CustTextInputField;
 
 const styles = StyleSheet.create({
   input: {
-    fontFamily: 'Poppins-Medium',
+    // fontFamily: 'Poppins-Medium',
     fontSize: fontSize.h5,
     color: colors.black,
     // fontWeight: '600',
@@ -106,12 +106,12 @@ const styles = StyleSheet.create({
   },
   verifyTxt: {
     fontSize: fontSize.p,
-    fontFamily: 'Poppins-Medium',
+    // fontFamily: 'Poppins-Medium',
     color: colors.blue,
   },
   verifiedTxt: {
     fontSize: fontSize.p,
-    fontFamily: 'Poppins-Medium',
+    // fontFamily: 'Poppins-Medium',
     color: colors.greenSecondary,
   },
   icon: {
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   codeTxt: {
     fontSize: fontSize.h5,
     color: colors.black,
-    fontFamily: 'Poppins-Medium',
+    // fontFamily: 'Poppins-Medium',
   },
   error: {
     borderColor: colors.red,
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   errorTxt: {
     fontSize: fontSize.p,
     color: colors.red,
-    fontFamily: 'Poppins-Medium',
+    // fontFamily: 'Poppins-Medium',
     textAlign: 'right',
   },
   focused: {

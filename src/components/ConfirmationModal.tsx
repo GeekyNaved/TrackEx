@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: fontSize.h6,
-    fontFamily: 'Poppins-Medium',
+    // fontFamily: 'Poppins-Medium',
     marginBottom: boxModelSize.twenty,
     textAlign: 'center',
   },
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: colors.white,
     fontSize: fontSize.p,
-    fontFamily: 'Poppins-Medium',
+    // fontFamily: 'Poppins-Medium',
   },
 });
 

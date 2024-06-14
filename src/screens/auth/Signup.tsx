@@ -168,17 +168,17 @@ const styles = StyleSheet.create({
     paddingVertical: boxModelSize.twenty,
   },
   greetingsMsg: {
-    fontFamily: 'Poppins-Medium',
+    // fontFamily: 'Poppins-Medium',
     fontSize: fontSize.h5,
   },
   title: {
-    fontFamily: 'Poppins-Medium',
+    // fontFamily: 'Poppins-Medium',
     fontSize: fontSize.h3,
     color: colors.black,
     fontWeight: '600',
   },
   subTitle: {
-    fontFamily: 'Poppins-Medium',
+    // fontFamily: 'Poppins-Medium',
     fontSize: fontSize.h6,
     color: colors.greySecondary,
   },
@@ -199,12 +199,12 @@ const styles = StyleSheet.create({
     paddingVertical: boxModelSize.ten,
   },
   noAccountTxt: {
-    fontFamily: 'Poppins-Medium',
+    // fontFamily: 'Poppins-Medium',
     fontSize: fontSize.p,
     color: colors.greySecondary,
   },
   signUpTxt: {
-    fontFamily: 'Poppins-Medium',
+    // fontFamily: 'Poppins-Medium',
     fontSize: fontSize.p,
     color: colors.blue,
   },

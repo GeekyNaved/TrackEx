@@ -4,7 +4,7 @@ const CustSnackBar = (message: string, callBack?: () => void) => {
   Snackbar.show({
     text: message,
     duration: Snackbar.LENGTH_SHORT,
-    fontFamily: 'Poppins-Medium',
+    // fontFamily: 'Poppins-Medium',
     // textColor: colors.white,
     // backgroundColor: colors.blue,
   });
