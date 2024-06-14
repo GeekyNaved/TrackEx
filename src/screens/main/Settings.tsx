@@ -1,5 +1,5 @@
-import React from 'react';
-import {Linking, StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {Linking, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import boxModelSize from '../../constants/boxModel';
 import colors from '../../constants/colors';
 import {fontSize} from '../../constants/fontSize';
@@ -11,8 +11,16 @@ import {
   ClipboardDocumentListIcon,
   QuestionMarkCircleIcon,
 } from 'react-native-heroicons/outline';
+import ConfirmationModal from '../../components/ConfirmationModal';
 
 const Settings = ({navigation}) => {
+  const [logoutModal, setLogoutModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+
+  const handleLogOut = () => {
+    // navigation.navigate('AuthStack');
+    setLogoutModal(false);
+  };
   return (
     <PageWrapper>
       <View style={styles.subContainer}>
@@ -52,6 +60,45 @@ const Settings = ({navigation}) => {
           title="Privacy Policies"
           containerStyles={styles.borderBoxContainer}
           onPress={() => navigation.navigate('PrivacyPolicy')}
+        />
+      </View>
+      <View style={styles.subContainer}>
+        <Text style={styles.heading}>Account</Text>
+
+        <BorderBox
+          leftIcon={
+            <ClipboardDocumentListIcon
+              color={colors.black}
+              size={boxModelSize.twenty}
+            />
+          }
+          rightIcon={
+            <ChevronRightIcon color={colors.black} size={boxModelSize.twenty} />
+          }
+          title="Delete Account"
+          containerStyles={styles.borderBoxContainer}
+          onPress={() => setDeleteModal(true)}
+        />
+        <TouchableOpacity
+          style={styles.logoutBtn}
+          onPress={() => setLogoutModal(true)}>
+          <Text style={styles.logoutTxt}>Logout</Text>
+        </TouchableOpacity>
+        <ConfirmationModal
+          message="Are you sure you want to delete the account?"
+          visible={deleteModal}
+          onClose={() => setDeleteModal(false)}
+          onConfirm={() => setDeleteModal(false)}
+          leftBtnTitle="Proceed"
+          rightBtnTitle="Cancel"
+        />
+        <ConfirmationModal
+          message="Are you sure you want to logout?"
+          visible={logoutModal}
+          onClose={() => setLogoutModal(false)}
+          onConfirm={handleLogOut}
+          leftBtnTitle="Yes"
+          rightBtnTitle="No"
         />
       </View>
     </PageWrapper>
