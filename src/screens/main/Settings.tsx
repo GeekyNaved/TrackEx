@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
-import {Linking, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, { useState } from 'react';
+import { Linking, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import boxModelSize from '../../constants/boxModel';
 import colors from '../../constants/colors';
-import {fontSize} from '../../constants/fontSize';
+import { fontSize } from '../../constants/fontSize';
 import PageWrapper from '../../components/PageWrapper';
 import BorderBox from '../../components/BorderBox';
 import {
@@ -12,14 +12,23 @@ import {
   QuestionMarkCircleIcon,
 } from 'react-native-heroicons/outline';
 import ConfirmationModal from '../../components/ConfirmationModal';
+import auth from '@react-native-firebase/auth';
+import { removeItem } from '../../constants/asyncStorage';
 
-const Settings = ({navigation}) => {
+const Settings = ({ navigation }) => {
   const [logoutModal, setLogoutModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
 
-  const handleLogOut = () => {
-    // navigation.navigate('AuthStack');
-    setLogoutModal(false);
+  // To log out and remove user data
+  const handleLogOut = async () => {
+    try {
+      await auth().signOut();
+      await removeItem('@user');
+      console.log('User logged out and data cleared');
+      navigation.navigate('AuthStack');
+    } catch (error) {
+      console.log('Logout error:', error);
+    }
   };
   return (
     <PageWrapper>

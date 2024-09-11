@@ -14,19 +14,19 @@ const MainNavigation = () => {
   return (
     <NavigationContainer>
       <StackContainer>
-        {token == null ? (
-          <StackScreen.Screen
-            name="AuthStack"
-            component={AuthStack}
-            options={{headerShown: false}}
-          />
-        ) : (
-          <StackScreen.Screen
-            name="MainTab"
-            component={MainTab}
-            options={{headerShown: false}}
-          />
-        )}
+        {/* {token !== null ? ( */}
+        <StackScreen.Screen
+          name="AuthStack"
+          component={AuthStack}
+          options={{headerShown: false}}
+        />
+        {/* // ) : ( */}
+        <StackScreen.Screen
+          name="MainTab"
+          component={MainTab}
+          options={{headerShown: false}}
+        />
+        {/* // )} */}
         <StackScreen.Screen
           name="EditTransaction"
           component={EditTransaction}

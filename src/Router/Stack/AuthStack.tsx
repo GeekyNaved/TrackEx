@@ -1,6 +1,7 @@
 import React from 'react';
-import Signup from '../../screens/auth/Signup';
 import {StackContainer, StackScreen} from '../Utils/StackContainer';
+import Login from '../../screens/auth/Login';
+import Signup from '../../screens/auth/Signup';
 
 const AuthStack = () => {
   return (
@@ -10,6 +11,11 @@ const AuthStack = () => {
         component={Login}
         options={{headerShown: false}}
       /> */}
+      <StackScreen.Screen
+        name="Login"
+        component={Login}
+        options={{headerShown: false}}
+      />
       <StackScreen.Screen
         name="Signup"
         component={Signup}

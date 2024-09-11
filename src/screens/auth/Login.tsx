@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {
+  Alert,
   ScrollView,
   StatusBar,
   StyleSheet,
@@ -14,8 +15,9 @@ import colors from '../../constants/colors';
 import {fontSize} from '../../constants/fontSize';
 import CustButton from '../../components/CustButton';
 import auth from '@react-native-firebase/auth';
+import {setItem} from '../../constants/asyncStorage';
 
-const Signup = ({navigation}) => {
+const Login = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errMsg, setErrMsg] = useState('');
@@ -37,14 +39,21 @@ const Signup = ({navigation}) => {
     }
   };
 
-  const registerWithEmail = async () => {
+  const signinWithEmail = async () => {
     try {
-      const res = await auth().createUserWithEmailAndPassword(
-        'naved@gmail.com',
-        '654321',
+      const res = await auth().signInWithEmailAndPassword(
+        'navedahmed040@gmail.com',
+        '123456',
       );
-      console.log(res);
+
+      const user = res?.user;
+
+      // Use storage utility to save user data
+      await setItem('@user', user);
+      console.log('User logged in and stored:', user);
+      navigation.navigate('MainTab');
     } catch (error) {
+      Alert.alert('Invalid credentials');
       console.log(error);
     }
   };
@@ -53,7 +62,7 @@ const Signup = ({navigation}) => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={colors.blue} />
       <ScrollView>
-        <Text style={styles.title}>Signup</Text>
+        <Text style={styles.title}>Login</Text>
         <View style={styles.formContainer}>
           <CustTextInputField
             label="Email"
@@ -80,15 +89,15 @@ const Signup = ({navigation}) => {
             errorMsg={errMsg}
           />
           <CustButton
-            title={'Signup'}
+            title={'Login'}
             style={styles.btn}
-            onPress={registerWithEmail}
+            onPress={signinWithEmail}
           />
 
           <View style={styles.bottomLink}>
             <Text style={styles.msg}>Don't have an account? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-              <Text style={styles.login}>login</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+              <Text style={styles.signup}>Signup</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -124,7 +133,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  login: {
+  signup: {
     fontSize: fontSize.h5,
     color: colors.blue,
     fontWeight: 'bold',
@@ -135,4 +144,4 @@ const styles = StyleSheet.create({
     fontWeight: 'semibold',
   },
 });
-export default Signup;
+export default Login;

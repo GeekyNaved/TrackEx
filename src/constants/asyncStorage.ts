@@ -1,47 +1,44 @@
-// import CustSnackBar from '../components/snackBar';
-// import {submitError} from '../services/errorLog';
-
+// storage.js
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// export const setSessionData = async (key, value) => {
-//   try {
-//     await AsyncStorage.setItem('@' + key, value);
-//   } catch (error) {
-//     submitError('Async Storage', 'try to set value to ' + key, error.message);
-//   }
-// };
+/**
+ * Store data in AsyncStorage
+ * @param {string} key - The key under which the value will be stored
+ * @param {any} value - The value to store
+ */
+export const setItem = async (key, value) => {
+  try {
+    await AsyncStorage.setItem(key, JSON.stringify(value));
+    console.log(`${key} saved successfully!`);
+  } catch (error) {
+    console.log(`Error saving ${key}:`, error);
+  }
+};
 
-// export const getSessionData = async (key) => {
-//   try {
-//     const value = await AsyncStorage.getItem('@' + key);
-//     return value !== null ? value : null;
-//   } catch (error) {
-//     submitError('Async Storage', 'try to get value from ' + key, error.message);
-//   }
-// };
+/**
+ * Retrieve data from AsyncStorage
+ * @param {string} key - The key of the value to retrieve
+ * @returns {Promise<any>} - The retrieved value, or null if not found
+ */
+export const getItem = async (key) => {
+  try {
+    const value = await AsyncStorage.getItem(key);
+    return value ? JSON.parse(value) : null;
+  } catch (error) {
+    console.log(`Error retrieving ${key}:`, error);
+    return null;
+  }
+};
 
-// export const setSessionDataObject = async (key, value) => {
-//   try {
-//     const jsonValue = JSON.stringify(value);
-//     await AsyncStorage.setItem('@' + key, jsonValue);
-//   } catch (error) {
-//     submitError('Async Storage', 'try to set object to ' + key, error.message);
-//   }
-// };
-
-// export const getSessionDataObject = async (key) => {
-//   try {
-//     const jsonValue = await AsyncStorage.getItem('@' + key);
-//     return jsonValue != null ? JSON.parse(jsonValue) : null;
-//   } catch (error) {
-//     submitError(
-//       'Async Storage',
-//       'try to set object from ' + key,
-//       error.message,
-//     );
-//   }
-// };
-
-export const clearSession = () => {
-  AsyncStorage.clear();
+/**
+ * Remove data from AsyncStorage
+ * @param {string} key - The key of the value to remove
+ */
+export const removeItem = async (key) => {
+  try {
+    await AsyncStorage.removeItem(key);
+    console.log(`${key} removed successfully!`);
+  } catch (error) {
+    console.log(`Error removing ${key}:`, error);
+  }
 };

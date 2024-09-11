@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, StyleSheet, Text, View} from 'react-native';
+import {FlatList, StatusBar, StyleSheet, Text, View} from 'react-native';
 import AccountBalanceHome from '../../components/AccountBalanceHome';
 import boxModelSize from '../../constants/boxModel';
 import TransactionCard from '../../components/TransactionCard';
@@ -12,6 +12,7 @@ const Home: React.FC<{navigation: NavigationProp<ParamListBase>}> = ({
 }) => {
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor={colors.black} />
       <AccountBalanceHome />
       <Text style={styles.recentTransactions}>Recent Transactions</Text>
       <FlatList
