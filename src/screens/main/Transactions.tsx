@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {PieChart} from 'react-native-gifted-charts';
 import AmountWithRupee from '../../components/AmountWithRupee';
@@ -7,6 +7,7 @@ import {fontSize} from '../../constants/fontSize';
 import boxModelSize from '../../constants/boxModel';
 import TransactionCard from '../../components/TransactionCard';
 import {dummyTransaction} from '../../constants/dummyData';
+import firestore from '@react-native-firebase/firestore';
 
 const Transactions = ({navigation}) => {
   const pieData = [
@@ -14,6 +15,18 @@ const Transactions = ({navigation}) => {
     {value: 40, color: '#79D2DE', text: '150'},
     {value: 20, color: '#ED6665', text: '500'},
   ];
+  const getTransactions = async () => {
+    const transactions = await firestore()
+      .collection('Transactions')
+      .doc('ABC')
+      .get();
+    console.log('transactions==>', transactions);
+  };
+
+  useEffect(() => {
+    getTransactions();
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.spendings}>
@@ -61,7 +74,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: boxModelSize.fifteen,
   },
   chartContainer: {
-    backgroundColor: colors.green100,
+    // backgroundColor: colors.green100,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
