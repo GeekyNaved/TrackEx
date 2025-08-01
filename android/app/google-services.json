@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "192653570622",
+    "project_id": "trackex-472e6",
+    "storage_bucket": "trackex-472e6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:192653570622:android:3f31986dbfa4cefefb176f",
+        "android_client_info": {
+          "package_name": "com.trackex"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiD4nqwQ6I27BHmw9d7KJo8N1hEOnZHCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
