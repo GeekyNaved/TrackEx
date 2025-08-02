@@ -16,6 +16,7 @@ import { fontSize } from '../constants/fontSize';
 import CustButton from '../components/CustButton';
 import auth from '@react-native-firebase/auth';
 import { setItem } from '../constants/asyncStorage';
+import firestore from '@react-native-firebase/firestore';
 
 const AuthScreen = ({ navigation }) => {
   const [isLogin, setIsLogin] = useState(true); // Toggle between login/signup
@@ -98,6 +99,56 @@ const AuthScreen = ({ navigation }) => {
     return isValid;
   };
 
+  const createUserDocument = async (user: any) => {
+    try {
+      await firestore().collection('users').doc(user.uid).set({
+        email: user.email,
+        createdAt: firestore.FieldValue.serverTimestamp(),
+        currency: 'INR', // Default currency
+        monthlyBudget: 0, // Default budget
+      });
+      
+      // Create default categories for the user
+      await createDefaultCategories(user.uid);
+    } catch (error) {
+      console.error('Error creating user document:', error);
+    }
+  };
+
+  const createDefaultCategories = async (userId: string) => {
+    const defaultIncomeCategories = [
+      { label: 'Salary', value: 'Salary' },
+      { label: 'Freelance', value: 'Freelance' },
+      { label: 'Business', value: 'Business' },
+    ];
+
+    const defaultExpenseCategories = [
+      { label: 'Food', value: 'Food' },
+      { label: 'Transportation', value: 'Transportation' },
+      { label: 'Housing', value: 'Housing' },
+      { label: 'Entertainment', value: 'Entertainment' },
+    ];
+
+    try {
+      const batch = firestore().batch();
+      const userRef = firestore().collection('users').doc(userId);
+      
+      defaultIncomeCategories.forEach(cat => {
+        const catRef = userRef.collection('categories').doc();
+        batch.set(catRef, { ...cat, type: 'income' });
+      });
+      
+      defaultExpenseCategories.forEach(cat => {
+        const catRef = userRef.collection('categories').doc();
+        batch.set(catRef, { ...cat, type: 'expense' });
+      });
+      
+      await batch.commit();
+    } catch (error) {
+      console.error('Error creating default categories:', error);
+    }
+  };
+
   const handleAuth = async () => {
     setLoading(true);
 
@@ -124,6 +175,7 @@ const AuthScreen = ({ navigation }) => {
           password.trim(),
         );
         const user = res?.user;
+        await createUserDocument(user);
         await setItem('@user', user);
         console.log('User created and stored:', user);
         navigation.navigate('MainTab');
@@ -258,6 +310,9 @@ const AuthScreen = ({ navigation }) => {
               <Text style={styles.linkText}>Forgot Password?</Text>
             </TouchableOpacity>
           </View> : null}
+           <TouchableOpacity onPress={() => navigation.navigate('MainTab')}>
+              <Text style={styles.linkText}>Home</Text>
+            </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
