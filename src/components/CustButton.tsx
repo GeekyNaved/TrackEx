@@ -16,6 +16,7 @@ interface CustButtonProps {
   variant?: string;
   btnTxtStyles?: object;
   otherProps?: any;
+  isLoading?: boolean;
 }
 const CustButton = ({
   isLoading,

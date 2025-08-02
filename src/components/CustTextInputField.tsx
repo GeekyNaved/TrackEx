@@ -1,4 +1,5 @@
-import React from 'react';
+// src/components/CustTextInputField.tsx
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,9 +7,11 @@ import {
   View,
   TouchableOpacity,
 } from 'react-native';
+import { EyeIcon, EyeSlashIcon } from 'react-native-heroicons/outline';
 import boxModelSize from '../constants/boxModel';
 import colors from '../constants/colors';
-import {fontSize} from '../constants/fontSize';
+import { fontSize } from '../constants/fontSize';
+
 interface inputFieldProps {
   label: string;
   value: string;
@@ -18,7 +21,13 @@ interface inputFieldProps {
   containerStyles?: object;
   isFocused: boolean;
   mobileField: boolean;
-  otherProps: any;
+  secureTextEntry?: boolean;
+  verifyField?: boolean;
+  verifiedField?: boolean;
+  onVerifyPress?: () => void;
+  errorMsg?: string;
+  disabled?: boolean;
+  otherProps?: any;
 }
 
 const CustTextInputField = ({
@@ -35,8 +44,15 @@ const CustTextInputField = ({
   style,
   errorMsg,
   disabled,
+  secureTextEntry = false,
   ...otherProps
 }: inputFieldProps) => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <View style={containerStyles}>
       <Text style={styles.label}>{label}</Text>
@@ -49,21 +65,36 @@ const CustTextInputField = ({
           <Text style={styles.verifiedTxt}>Verified</Text>
         </View>
       ) : null}
-      <TextInput
-        value={value}
-        placeholder={placeholder}
-        style={[
-          styles.input,
-          style,
-          disabled && styles.disabled,
-          errorMsg && styles.error,
-          isFocused && styles.focused,
-        ]}
-        // secureTextEntry={showPassword}
-        onChangeText={onChangeText}
-        editable={disabled ? false : true}
-        {...otherProps}
-      />
+      <View style={styles.inputContainer}>
+        <TextInput
+          value={value}
+          placeholder={placeholder}
+          style={[
+            styles.input,
+            style,
+            disabled && styles.disabled,
+            errorMsg && styles.error,
+            isFocused && styles.focused,
+            secureTextEntry && styles.passwordInput,
+          ]}
+          secureTextEntry={secureTextEntry && !showPassword}
+          onChangeText={onChangeText}
+          editable={disabled ? false : true}
+          {...otherProps}
+        />
+        {secureTextEntry && (
+          <TouchableOpacity
+            style={styles.eyeIcon}
+            onPress={togglePasswordVisibility}
+          >
+            {showPassword ? (
+              <EyeSlashIcon size={20} color={colors.greySecondary} />
+            ) : (
+              <EyeIcon size={20} color={colors.greySecondary} />
+            )}
+          </TouchableOpacity>
+        )}
+      </View>
       {mobileField ? (
         <View style={styles.countryCode}>
           <Text style={[styles.codeTxt, disabled && styles.disabled]}>+44</Text>
@@ -76,19 +107,21 @@ const CustTextInputField = ({
   );
 };
 
-export default CustTextInputField;
-
 const styles = StyleSheet.create({
   input: {
-    // fontFamily: 'Poppins-Medium',
     fontSize: fontSize.h5,
     color: colors.black,
-    // fontWeight: '600',
     borderWidth: boxModelSize.one,
     borderRadius: boxModelSize.four,
     paddingVertical: boxModelSize.ten,
     paddingHorizontal: boxModelSize.fifteen,
     borderColor: colors.gray,
+  },
+  passwordInput: {
+    paddingRight: boxModelSize.fourty, // Extra padding for the eye icon
+  },
+  inputContainer: {
+    position: 'relative',
   },
   label: {
     fontSize: fontSize.h6,
@@ -106,21 +139,17 @@ const styles = StyleSheet.create({
   },
   verifyTxt: {
     fontSize: fontSize.p,
-    // fontFamily: 'Poppins-Medium',
     color: colors.blue,
   },
   verifiedTxt: {
     fontSize: fontSize.p,
-    // fontFamily: 'Poppins-Medium',
     color: colors.greenSecondary,
   },
-  icon: {
+  eyeIcon: {
     position: 'absolute',
-    right: 0,
-    paddingVertical: boxModelSize.ten,
-    paddingHorizontal: boxModelSize.ten,
+    right: boxModelSize.ten,
+    top: boxModelSize.ten,
     zIndex: 2,
-    // paddingVertical: Platform.OS === 'android' ? scale(8) : null,
   },
   countryCode: {
     position: 'absolute',
@@ -128,12 +157,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: boxModelSize.ten,
     zIndex: 2,
     paddingVertical: boxModelSize.ten,
-    // paddingVertical: Platform.OS === 'android' ? scale(8) : null,
   },
   codeTxt: {
     fontSize: fontSize.h5,
     color: colors.black,
-    // fontFamily: 'Poppins-Medium',
   },
   error: {
     borderColor: colors.red,
@@ -141,13 +168,14 @@ const styles = StyleSheet.create({
   errorTxt: {
     fontSize: fontSize.p,
     color: colors.red,
-    // fontFamily: 'Poppins-Medium',
     textAlign: 'right',
   },
   focused: {
-    borderColor: colors.blue, // Change the color when focused
+    borderColor: colors.blue,
   },
   disabled: {
     opacity: 0.5,
   },
 });
+
+export default CustTextInputField;
