@@ -1,27 +1,50 @@
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
+import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import boxModelSize from '../../constants/boxModel';
 import CustTextInputField from '../../components/CustTextInputField';
 import CustButton from '../../components/CustButton';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import {
-  dummyCategoryExpense,
-  dummyCategoryIncome,
-} from '../../constants/dummyData';
 import dayjs from 'dayjs';
 import colors from '../../constants/colors';
-import ConfirmationModal from '../../components/ConfirmationModal';
-const AddTransaction = ({route}) => {
-  const [categoryType, setCategoryType] = useState<string>('Expense');
-  const [categoriesData, setCategoriesData] = useState(dummyCategoryExpense);
+import CustDropdown from '../../components/CustDropdown';
+import { getCategories, addTransaction } from '../../firestore';
+
+const AddTransaction = ({ navigation, route }) => {
+  const [categoryType, setCategoryType] = useState<'expense' | 'income'>('expense');
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [amount, setAmount] = useState('');
   const [amountError, setAmountError] = useState('');
   const [notes, setNotes] = useState('');
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState(new Date());
   const [focusedField, setFocusedField] = useState(null);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [disableBtn, setDisableBtn] = useState(false);
-  const [deleteModal, setDeleteModal] = useState(false);
+  const [disableBtn, setDisableBtn] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch categories based on type
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const fetchedCategories = await getCategories(categoryType);
+        setCategories(fetchedCategories);
+        if (fetchedCategories.length > 0) {
+          setSelectedCategory(fetchedCategories[0].id);
+        }
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, [categoryType]);
+
+  // Form validation
+  useEffect(() => {
+    const isValid = amount.length > 0 && selectedCategory && date;
+    setDisableBtn(!isValid);
+  }, [amount, selectedCategory, date]);
+
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -30,28 +53,60 @@ const AddTransaction = ({route}) => {
     setDatePickerVisibility(false);
   };
 
-  const handleConfirm = date => {
-    const selectedDate = dayjs(date).format('DD/MM/YYYY');
+  const handleConfirm = (selectedDate: Date) => {
     setDate(selectedDate);
     hideDatePicker();
   };
 
-  const handleFocus = field => {
+  const handleFocus = (field: string) => {
     setFocusedField(field);
   };
+
   const handleBlur = () => {
     setFocusedField(null);
   };
 
   const handleChange = (key: string, value: any) => {
     if (key === 'amount') {
-      setAmount(value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1'));
+      const cleanedValue = value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+      setAmount(cleanedValue);
+      setAmountError(cleanedValue.length === 0 ? 'Amount is required' : '');
     }
     if (key === 'notes') {
       setNotes(value.replace(/\s+/g, ' '));
     }
-    if (key === 'date') {
-      setDate(value);
+  };
+
+  // Reset all form fields
+  const resetForm = () => {
+    setAmount('');
+    setAmountError('');
+    setNotes('');
+    setDate(new Date());
+    setFocusedField(null);
+    setDisableBtn(true);
+    setSelectedCategory('');
+    // Note: We don't reset categoryType as it's the main filter
+  };
+
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      await addTransaction({
+        type: categoryType,
+        category: selectedCategory,
+        amount: parseFloat(amount),
+        date,
+        notes,
+      });
+      // reset form 
+      resetForm();
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error adding transaction:', error);
+      Alert.alert('Error', 'Failed to add transaction');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,32 +116,23 @@ const AddTransaction = ({route}) => {
         <CustButton
           title="Expense"
           style={[
-            disableBtn && styles.disabledBtn,
-            categoryType === 'Expense'
+            categoryType === 'expense'
               ? styles.btnExpenseSelected
               : styles.btnExpenseNotSelected,
           ]}
-          onPress={() => {
-            setCategoryType('Expense');
-            setCategoriesData(dummyCategoryExpense);
-          }}
-          otherProps
+          onPress={() => setCategoryType('expense')}
         />
         <CustButton
           title="Income"
           style={[
-            disableBtn && styles.disabledBtn,
-            categoryType === 'Income'
+            categoryType === 'income'
               ? styles.btnIncomeSelected
               : styles.btnIncomeNotSelected,
           ]}
-          onPress={() => {
-            setCategoryType('Income');
-            setCategoriesData(dummyCategoryIncome);
-          }}
-          otherProps
+          onPress={() => setCategoryType('income')}
         />
       </View>
+
       <CustTextInputField
         label="Amount"
         containerStyles={styles.input}
@@ -99,6 +145,7 @@ const AddTransaction = ({route}) => {
         keyboardType="numeric"
         errorMsg={amountError}
       />
+
       <CustTextInputField
         label="Notes"
         containerStyles={styles.input}
@@ -110,42 +157,47 @@ const AddTransaction = ({route}) => {
         onBlur={handleBlur}
       />
 
+      <View style={styles.input}>
+        <CustDropdown
+          label="Category"
+          category={selectedCategory}
+          // data={categories}
+          data={categories.map(cat => ({
+            id: cat.id,
+            label: cat.label,
+            value: cat.label,  // Consistent with EditTransaction
+          }))}
+          onSelect={(id) => setSelectedCategory(id)}
+        />
+      </View>
+
       <TouchableOpacity onPress={showDatePicker}>
         <CustTextInputField
           label="Date"
           containerStyles={styles.input}
-          placeholder="Enter Date"
-          value={date}
-          onChangeText={handleChange.bind(this, 'date')}
+          placeholder="Select Date"
+          value={dayjs(date).format('DD/MM/YYYY')}
           isFocused={focusedField === 'date'}
           onFocus={() => handleFocus('date')}
           onBlur={handleBlur}
           disabled
         />
       </TouchableOpacity>
+
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         mode="date"
-        date={dayjs().toDate()}
+        date={date}
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
       />
 
       <CustButton
-        disabled={disableBtn}
-        // isLoading={isLoading}
+        disabled={disableBtn || loading}
+        isLoading={loading}
         title="Save"
-        style={[styles.btnSave, disableBtn && styles.disabledBtn]}
-        // onPress={onSubmitRegister}
-        otherProps
-      />
-      <ConfirmationModal
-        message="Are you sure you want to delete this transaction?"
-        visible={deleteModal}
-        onClose={() => setDeleteModal(false)}
-        onConfirm={() => setDeleteModal(false)}
-        leftBtnTitle="Yes"
-        rightBtnTitle="No"
+        style={[styles.btnSave, (disableBtn || loading) && styles.disabledBtn]}
+        onPress={handleSubmit}
       />
     </ScrollView>
   );
@@ -159,15 +211,14 @@ const styles = StyleSheet.create({
     marginTop: boxModelSize.twenty,
   },
   btnContainer: {
-    display: 'flex',
     flexDirection: 'row',
     marginTop: boxModelSize.ten,
+    gap: boxModelSize.ten,
   },
   btnExpenseSelected: {
     flex: 1,
     backgroundColor: colors.red,
     borderColor: colors.red,
-    color: colors.black,
   },
   btnExpenseNotSelected: {
     flex: 1,
@@ -178,7 +229,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.green,
     borderColor: colors.green,
-    color: colors.black,
   },
   btnIncomeNotSelected: {
     flex: 1,

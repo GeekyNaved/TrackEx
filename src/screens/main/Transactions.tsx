@@ -1,68 +1,208 @@
-import React, {useEffect} from 'react';
-import {FlatList, StyleSheet, Text, View} from 'react-native';
-import {PieChart} from 'react-native-gifted-charts';
+import React, { useState, useEffect } from 'react';
+import { FlatList, StyleSheet, Text, View, ActivityIndicator, Switch } from 'react-native';
+import { PieChart } from 'react-native-gifted-charts';
 import AmountWithRupee from '../../components/AmountWithRupee';
 import colors from '../../constants/colors';
-import {fontSize} from '../../constants/fontSize';
+import { fontSize } from '../../constants/fontSize';
 import boxModelSize from '../../constants/boxModel';
 import TransactionCard from '../../components/TransactionCard';
-import {dummyTransaction} from '../../constants/dummyData';
-import firestore from '@react-native-firebase/firestore';
+import { getTransactions, getMonthlySummary, getCategoryStats } from '../../firestore';
+import { NavigationProp, ParamListBase, useFocusEffect } from '@react-navigation/native';
+import EmptyState from '../../components/EmptyState';
 
-const Transactions = ({navigation}) => {
-  const pieData = [
-    {value: 54, color: '#177AD5', text: '50'},
-    {value: 40, color: '#79D2DE', text: '150'},
-    {value: 20, color: '#ED6665', text: '500'},
-  ];
-  const getTransactions = async () => {
-    const transactions = await firestore()
-      .collection('Transactions')
-      .doc('ABC')
-      .get();
-    console.log('transactions==>', transactions);
+const Transactions = ({ navigation }: { navigation: NavigationProp<ParamListBase> }) => {
+  const [transactions, setTransactions] = useState([]);
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [categoryStats, setCategoryStats] = useState([]);
+  const [balanceData, setBalanceData] = useState({
+    totalIncome: 0,
+    totalExpense: 0,
+    balance: 0
+  });
+  const [showIncome, setShowIncome] = useState(false); // Toggle state
+
+  // Get current month and year
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth() + 1;
+  const currentYear = currentDate.getFullYear();
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+
+      // Fetch all data in parallel
+      const [summary, recentTransactions, stats] = await Promise.all([
+        getMonthlySummary(currentMonth, currentYear),
+        getTransactions({
+          month: currentMonth,
+          year: currentYear,
+          limit: 50 // Show more transactions
+        }),
+        getCategoryStats(currentMonth, currentYear)
+      ]);
+
+      setBalanceData(summary);
+      setTransactions(recentTransactions || []);
+      filterTransactions(recentTransactions || [], showIncome);
+
+      // Convert category stats to pie chart data
+      const pieData = Object.entries(stats)
+        .filter(([_, data]) => showIncome ? data.income > 0 : data.expense > 0)
+        .map(([categoryId, data]) => ({
+          value: showIncome ? data.income : data.expense,
+          color: getRandomColor(),
+          text: data.label || categoryId,
+          category: data.label || categoryId
+        }));
+
+      setCategoryStats(pieData);
+    } catch (error) {
+      console.error('Error fetching transactions data:', error);
+      // Set empty states
+      setBalanceData({
+        totalIncome: 0,
+        totalExpense: 0,
+        balance: 0
+      });
+      setTransactions([]);
+      setFilteredTransactions([]);
+      setCategoryStats([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(() => {
-    getTransactions();
-  }, []);
+  // Filter transactions based on toggle state
+  const filterTransactions = (transactions, incomeOnly) => {
+    const filtered = incomeOnly
+      ? transactions.filter(t => t.type === 'income')
+      : transactions.filter(t => t.type === 'expense');
+    setFilteredTransactions(filtered);
+  };
+
+  // Handle toggle switch change
+  const handleToggleChange = (value) => {
+    setShowIncome(value);
+    filterTransactions(transactions, value);
+
+    // Update pie chart data
+    if (categoryStats.length > 0) {
+      const updatedStats = categoryStats.map(item => ({
+        ...item,
+        value: value ? item.value * 2 : item.value / 2 // Example adjustment
+      }));
+      setCategoryStats(updatedStats);
+    }
+  };
+
+  // Helper function to generate random colors for pie chart
+  const getRandomColor = () => {
+    const colors = showIncome
+      ? ['#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B'] // Green/yellow shades for income
+      : ['#F44336', '#E91E63', '#9C27B0', '#673AB7']; // Red/purple shades for expenses
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+
+  // Refresh data when screen comes into focus or toggle changes
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+    }, [showIncome])
+  );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.black} />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <View style={styles.spendings}>
-        <Text style={styles.spendingTxt}>My Spendings :</Text>
-        <AmountWithRupee customStyle={styles.spendingValue} amount={20900} />
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>
+          {showIncome ? 'Income' : 'Expenses'}
+        </Text>
+        <View style={styles.toggleContainer}>
+          <Text style={styles.toggleLabel}>Expense</Text>
+          <Switch
+            trackColor={{ false: colors.red, true: colors.green }}
+            thumbColor={colors.white}
+            onValueChange={handleToggleChange}
+            value={showIncome}
+            style={styles.toggleSwitch}
+          />
+          <Text style={styles.toggleLabel}>Income</Text>
+        </View>
       </View>
 
-      <View style={styles.chartContainer}>
-        <PieChart
-          donut
-          showText
-          textColor="black"
-          radius={100}
-          textSize={13}
-          showTextBackground
-          textBackgroundRadius={20}
-          data={pieData}
+      <View style={styles.spendings}>
+        <Text style={styles.spendingTxt}>
+          Total {showIncome ? 'Income' : 'Spendings'}:
+        </Text>
+        <AmountWithRupee
+          customStyle={styles.spendingValue}
+          amount={showIncome ? balanceData.totalIncome : balanceData.totalExpense}
         />
       </View>
-      <Text style={styles.recentTransactions}>Recent Transactions</Text>
-      <FlatList
-        data={dummyTransaction}
-        keyExtractor={item => item._id.toString()} // Assuming each item has a unique `id`
-        renderItem={({item}) => {
-          return (
+
+      {categoryStats.length > 0 ? (
+        <View style={styles.chartContainer}>
+          <PieChart
+            donut
+            showText
+            textColor="black"
+            radius={100}
+            textSize={13}
+            showTextBackground
+            textBackgroundRadius={20}
+            data={categoryStats}
+            centerLabelComponent={() => (
+              <Text style={styles.pieCenterText}>
+                {showIncome ? 'Income' : 'Expenses'}
+              </Text>
+            )}
+          />
+        </View>
+      ) : (
+        <View style={styles.chartPlaceholder}>
+          <Text style={styles.noDataText}>
+            No {showIncome ? 'income' : 'expense'} data available
+          </Text>
+        </View>
+      )}
+
+      <Text style={styles.recentTransactions}>
+        Recent {showIncome ? 'Income' : 'Expenses'}
+      </Text>
+
+      {filteredTransactions.length > 0 ? (
+        <FlatList
+          data={filteredTransactions}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => (
             <TransactionCard
+              id={item.id}
               navigation={navigation}
               type={item.type}
               category={item.category}
               notes={item.notes}
               amount={item.amount}
-              date={item.date}
+              date={item.date?.toDate?.() || new Date()}
             />
-          );
-        }}
-      />
+          )}
+        />
+      ) : (
+        <EmptyState
+          imageSource={require('../../assets/images/no-transactions.png')}
+          title={`No ${showIncome ? 'Income' : 'Expense'} Transactions`}
+          description={`Start adding ${showIncome ? 'income' : 'expenses'} to see them here`}
+          actionText={`Add ${showIncome ? 'Income' : 'Expense'}`}
+          onAction={() => navigation.navigate('AddTransaction', { type: showIncome ? 'income' : 'expense' })}
+        />
+      )}
     </View>
   );
 };
@@ -72,12 +212,56 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white,
     paddingHorizontal: boxModelSize.fifteen,
+    paddingVertical: boxModelSize.ten,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.white,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: boxModelSize.fifteen,
+  },
+  headerTitle: {
+    fontSize: fontSize.h2,
+    fontWeight: 'bold',
+    color: colors.black,
+  },
+  toggleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  toggleLabel: {
+    fontSize: fontSize.p,
+    color: colors.grayPrimary,
+    marginHorizontal: boxModelSize.five,
+  },
+  toggleSwitch: {
+    transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }],
   },
   chartContainer: {
-    // backgroundColor: colors.green100,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
+    marginVertical: boxModelSize.twenty,
+  },
+  chartPlaceholder: {
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pieCenterText: {
+    fontSize: fontSize.p,
+    fontWeight: 'bold',
+    color: colors.black,
+  },
+  noDataText: {
+    fontSize: fontSize.p,
+    color: colors.grayPrimary,
   },
   spendings: {
     marginVertical: boxModelSize.twenty,

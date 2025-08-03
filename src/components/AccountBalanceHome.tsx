@@ -7,14 +7,14 @@ import boxModelSize from '../constants/boxModel';
 import {fontSize} from '../constants/fontSize';
 import colors from '../constants/colors';
 
-const AccountBalanceHome: React.FC = () => {
+const AccountBalanceHome: React.FC = ({income, expense, balance}) => {
   return (
     <View>
       <Text style={styles.accountBalance}>Account Balance</Text>
-      <AmountWithRupee customStyle={styles.amount} amount={20900} />
+      <AmountWithRupee customStyle={styles.amount} amount={balance} />
       <View style={styles.moneyCardContainer}>
-        <MoneyCard title="Income" amount={40000} />
-        <MoneyCard title="Expenses" amount={19100} />
+        <MoneyCard title="Income" amount={income} />
+        <MoneyCard title="Expenses" amount={expense} />
       </View>
     </View>
   );

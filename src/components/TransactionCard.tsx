@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import {
   ArrowDownTrayIcon,
   ArrowUpTrayIcon,
@@ -8,10 +8,11 @@ import {
 import boxModelSize from '../constants/boxModel';
 import colors from '../constants/colors';
 import AmountWithRupee from './AmountWithRupee';
-import {fontSize} from '../constants/fontSize';
-import {NavigationProp, ParamListBase} from '@react-navigation/native';
+import { fontSize } from '../constants/fontSize';
+import { NavigationProp, ParamListBase } from '@react-navigation/native';
 import dayjs from 'dayjs';
 interface TransactionCardProps {
+  id: string;
   navigation: NavigationProp<ParamListBase>;
   type: string;
   category: string;
@@ -20,6 +21,7 @@ interface TransactionCardProps {
   date: string;
 }
 const TransactionCard: React.FC<TransactionCardProps> = ({
+  id,
   navigation,
   type,
   category,
@@ -27,19 +29,12 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
   amount,
   date,
 }) => {
-  const [open, setOpen] = useState(false);
 
-  const handleClickOpen = () => {
-    // console.log('name', name)
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
   return (
     <TouchableOpacity
       onPress={() =>
         navigation.navigate('EditTransaction', {
+          id,
           type,
           category,
           notes,
@@ -71,13 +66,11 @@ const TransactionCard: React.FC<TransactionCardProps> = ({
             Date: {dayjs(date).format('DD/MM/YY')}
           </Text>
         </View>
-        {/* <EditTransactionDialog isOTexten={open} onClose={handleClose}> */}
         <View>
           <View>
             <PencilIcon color={colors.black} size={boxModelSize.twenty} />
           </View>
         </View>
-        {/* </EditTransactionDialog> */}
       </View>
     </TouchableOpacity>
   );
