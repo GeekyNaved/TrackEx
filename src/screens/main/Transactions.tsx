@@ -122,19 +122,25 @@ const Transactions = ({ navigation }: { navigation: NavigationProp<ParamListBase
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>
-          {showIncome ? 'Income' : 'Expenses'}
-        </Text>
-        <View style={styles.toggleContainer}>
-          <Text style={styles.toggleLabel}>Expense</Text>
-          <Switch
-            trackColor={{ false: colors.red, true: colors.green }}
-            thumbColor={colors.white}
-            onValueChange={handleToggleChange}
-            value={showIncome}
-            style={styles.toggleSwitch}
-          />
-          <Text style={styles.toggleLabel}>Income</Text>
+        <View style={styles.customToggleWrapper}>
+          <Text style={[
+            styles.toggleLabel,
+            !showIncome && styles.toggleLabelActive
+          ]}>Expense</Text>
+          <View style={styles.switchBackground}>
+            <Switch
+              trackColor={{ false: colors.gray, true: colors.green }}
+              thumbColor={colors.white}
+              ios_backgroundColor={colors.gray}
+              onValueChange={handleToggleChange}
+              value={showIncome}
+              style={styles.toggleSwitch}
+            />
+          </View>
+          <Text style={[
+            styles.toggleLabel,
+            showIncome && styles.toggleLabelActive
+          ]}>Income</Text>
         </View>
       </View>
 
@@ -212,7 +218,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white,
     paddingHorizontal: boxModelSize.fifteen,
-    paddingVertical: boxModelSize.ten,
+    paddingVertical: boxModelSize.fifteen,
   },
   loadingContainer: {
     flex: 1,
@@ -222,7 +228,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     marginBottom: boxModelSize.fifteen,
   },
@@ -231,17 +237,38 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.black,
   },
-  toggleContainer: {
+  customToggleWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: colors.lightBlack,
+    borderRadius: 20,
+    paddingHorizontal: boxModelSize.ten,
+    paddingVertical: boxModelSize.five,
+    shadowColor: colors.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  switchBackground: {
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    padding: 2,
+    marginHorizontal: boxModelSize.five,
   },
   toggleLabel: {
     fontSize: fontSize.p,
-    color: colors.grayPrimary,
+    color: colors.white,
     marginHorizontal: boxModelSize.five,
+    fontWeight: '500',
+  },
+  toggleLabelActive: {
+    color: colors.green,
+    fontWeight: 'bold',
   },
   toggleSwitch: {
-    transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }],
+    transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }],
+    marginHorizontal: 2,
   },
   chartContainer: {
     display: 'flex',
