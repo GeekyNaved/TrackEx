@@ -107,7 +107,7 @@ const AuthScreen = ({ navigation }) => {
         currency: 'INR', // Default currency
         monthlyBudget: 0, // Default budget
       });
-      
+
       // Create default categories for the user
       await createDefaultCategories(user.uid);
     } catch (error) {
@@ -132,17 +132,17 @@ const AuthScreen = ({ navigation }) => {
     try {
       const batch = firestore().batch();
       const userRef = firestore().collection('users').doc(userId);
-      
+
       defaultIncomeCategories.forEach(cat => {
         const catRef = userRef.collection('categories').doc();
         batch.set(catRef, { ...cat, type: 'income' });
       });
-      
+
       defaultExpenseCategories.forEach(cat => {
         const catRef = userRef.collection('categories').doc();
         batch.set(catRef, { ...cat, type: 'expense' });
       });
-      
+
       await batch.commit();
     } catch (error) {
       console.error('Error creating default categories:', error);
@@ -310,9 +310,6 @@ const AuthScreen = ({ navigation }) => {
               <Text style={styles.linkText}>Forgot Password?</Text>
             </TouchableOpacity>
           </View> : null}
-           <TouchableOpacity onPress={() => navigation.navigate('MainTab')}>
-              <Text style={styles.linkText}>Home</Text>
-            </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
