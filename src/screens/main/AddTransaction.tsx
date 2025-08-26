@@ -1,5 +1,5 @@
 import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import boxModelSize from '../../constants/boxModel';
 import CustTextInputField from '../../components/CustTextInputField';
 import CustButton from '../../components/CustButton';
@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import colors from '../../constants/colors';
 import CustDropdown from '../../components/CustDropdown';
 import { getCategories, addTransaction } from '../../firestore';
+import { useFocusEffect } from '@react-navigation/native';
 
 const AddTransaction = ({ navigation, route }) => {
   const [categoryType, setCategoryType] = useState<'expense' | 'income'>('expense');
@@ -23,7 +24,8 @@ const AddTransaction = ({ navigation, route }) => {
   const [loading, setLoading] = useState(false);
 
   // Fetch categories based on type
-  useEffect(() => {
+  useFocusEffect(
+  useCallback(() => {
     const fetchCategories = async () => {
       try {
         const fetchedCategories = await getCategories(categoryType);
@@ -37,7 +39,8 @@ const AddTransaction = ({ navigation, route }) => {
     };
 
     fetchCategories();
-  }, [categoryType]);
+  }, [categoryType]) // dependencies
+);
 
   // Form validation
   useEffect(() => {
