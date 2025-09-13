@@ -10,11 +10,27 @@ import { getTransactions, getMonthlySummary, getCategoryStats } from '../../fire
 import { NavigationProp, ParamListBase, useFocusEffect } from '@react-navigation/native';
 import EmptyState from '../../components/EmptyState';
 
+interface Transaction {
+  id: string;
+  type: 'income' | 'expense';
+  category: string;
+  notes?: string;
+  amount: number;
+  date: { toDate?: () => Date } | Date;
+}
+
+interface CategoryStat {
+  value: number;
+  color: string;
+  text: string;
+  category: string;
+}
+
 const Transactions = ({ navigation }: { navigation: NavigationProp<ParamListBase> }) => {
-  const [transactions, setTransactions] = useState([]);
-  const [filteredTransactions, setFilteredTransactions] = useState([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
-  const [categoryStats, setCategoryStats] = useState([]);
+  const [categoryStats, setCategoryStats] = useState<CategoryStat[]>([]);
   const [balanceData, setBalanceData] = useState({
     totalIncome: 0,
     totalExpense: 0,
@@ -52,7 +68,8 @@ const Transactions = ({ navigation }: { navigation: NavigationProp<ParamListBase
         .map(([categoryId, data]) => ({
           value: showIncome ? data.income : data.expense,
           color: getRandomColor(),
-          text: data.label || categoryId,
+          text: showIncome ? data.income : data.expense,
+          // text: data.label || categoryId,
           category: data.label || categoryId
         }));
 
@@ -74,7 +91,7 @@ const Transactions = ({ navigation }: { navigation: NavigationProp<ParamListBase
   };
 
   // Filter transactions based on toggle state
-  const filterTransactions = (transactions, incomeOnly) => {
+  const filterTransactions = (transactions: Transaction[], incomeOnly: boolean) => {
     const filtered = incomeOnly
       ? transactions.filter(t => t.type === 'income')
       : transactions.filter(t => t.type === 'expense');
@@ -82,7 +99,7 @@ const Transactions = ({ navigation }: { navigation: NavigationProp<ParamListBase
   };
 
   // Handle toggle switch change
-  const handleToggleChange = (value) => {
+  const handleToggleChange = (value: boolean) => {
     setShowIncome(value);
     filterTransactions(transactions, value);
 
@@ -96,13 +113,59 @@ const Transactions = ({ navigation }: { navigation: NavigationProp<ParamListBase
     }
   };
 
-  // Helper function to generate random colors for pie chart
-  const getRandomColor = () => {
-    const colors = showIncome
-      ? ['#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B'] // Green/yellow shades for income
-      : ['#F44336', '#E91E63', '#9C27B0', '#673AB7']; // Red/purple shades for expenses
-    return colors[Math.floor(Math.random() * colors.length)];
-  };
+  // Helper function to get unique colors for pie chart
+  const getRandomColor = (() => {
+    const incomeColors = [
+      '#4CAF50', // Green
+      '#8BC34A', // Light Green
+      '#009688', // Teal
+      '#00BCD4', // Cyan
+      '#2196F3', // Blue
+      '#3F51B5', // Indigo
+      '#4DB6AC', // Teal 300
+      '#81C784', // Green 300
+      '#7CB342', // Light Green 600
+      '#43A047', // Green 600
+      '#00897B', // Teal 600
+      '#00ACC1', // Cyan 600
+      '#039BE5', // Light Blue 600
+      '#1E88E5', // Blue 600
+      '#3949AB', // Indigo 600
+      '#26A69A', // Teal 400
+    ];
+
+    const expenseColors = [
+      '#F44336', // Red
+      '#E91E63', // Pink
+      '#9C27B0', // Purple
+      '#673AB7', // Deep Purple
+      '#FF5722', // Deep Orange
+      '#FF9800', // Orange
+      '#EF5350', // Red 400
+      '#EC407A', // Pink 400
+      '#AB47BC', // Purple 400
+      '#7E57C2', // Deep Purple 400
+      '#FF7043', // Deep Orange 400
+      '#FFA726', // Orange 400
+      '#D81B60', // Pink 600
+      '#8E24AA', // Purple 600
+      '#5E35B1', // Deep Purple 600
+      '#F4511E', // Deep Orange 600
+    ];
+
+    let currentIncomeIndex = 0;
+    let currentExpenseIndex = 0;
+
+    return () => {
+      if (showIncome) {
+        currentIncomeIndex = (currentIncomeIndex + 1) % incomeColors.length;
+        return incomeColors[currentIncomeIndex];
+      } else {
+        currentExpenseIndex = (currentExpenseIndex + 1) % expenseColors.length;
+        return expenseColors[currentExpenseIndex];
+      }
+    };
+  })();
 
   // Refresh data when screen comes into focus or toggle changes
   useFocusEffect(
@@ -155,23 +218,59 @@ const Transactions = ({ navigation }: { navigation: NavigationProp<ParamListBase
       </View>
 
       {categoryStats.length > 0 ? (
-        <View style={styles.chartContainer}>
-          <PieChart
-            donut
-            showText
-            textColor="black"
-            radius={100}
-            textSize={13}
-            showTextBackground
-            textBackgroundRadius={20}
-            data={categoryStats}
-            centerLabelComponent={() => (
-              <Text style={styles.pieCenterText}>
-                {showIncome ? 'Income' : 'Expenses'}
-              </Text>
-            )}
-          />
-        </View>
+        // <View style={styles.chartContainer}>
+        <>
+          <View style={styles.chartWrapper}>
+            {/* <View style={styles.donutContainer}> */}
+              <PieChart
+                donut
+                showText
+                textColor={colors.black}
+                // radius={95}
+                textSize={9}
+                fontWeight="600"
+                showTextBackground
+                textBackgroundColor="rgba(255, 255, 255, 0.9)"
+                textBackgroundRadius={15}
+                data={categoryStats}
+                innerRadius={55}
+                innerCircleColor={colors.white}
+                focusOnPress
+                labelsPosition="outward"
+                strokeColor={colors.white}
+                strokeWidth={1}
+                centerLabelComponent={() => (
+                  <View style={styles.centerLabel}>
+                    <Text style={styles.pieCenterText}>
+                      {showIncome ? 'Income' : 'Expenses'}
+                    </Text>
+                    <Text style={[
+                      styles.pieTotalAmount,
+                      { color: showIncome ? colors.green : colors.red }
+                    ]}>
+                      ₹{showIncome ? balanceData.totalIncome : balanceData.totalExpense}
+                    </Text>
+                  </View>
+                )}
+              />
+            {/* </View> */}
+            <View style={styles.legendContainer}>
+              {categoryStats.map((item, index) =>  (
+                  <View key={index} style={styles.legendItem}>
+                  <View style={[styles.legendColor, { backgroundColor: item.color }]} />
+                  <Text style={styles.legendText} numberOfLines={1}>
+                    {item.category}
+                  </Text>
+                  {/* <AmountWithRupee
+                    customStyle={styles.legendAmount}
+                    amount={item.value}
+                    /> */}
+                </View>
+              ))}
+            </View>
+          </View>
+          </>
+        // {/* </View> */}
       ) : (
         <View style={styles.chartPlaceholder}>
           <Text style={styles.noDataText}>
@@ -196,7 +295,7 @@ const Transactions = ({ navigation }: { navigation: NavigationProp<ParamListBase
               category={item.category}
               notes={item.notes}
               amount={item.amount}
-              date={item.date?.toDate?.() || new Date()}
+              date={(item.date instanceof Date ? item.date : (item.date?.toDate?.() || new Date())).toISOString()}
             />
           )}
         />
@@ -271,20 +370,78 @@ const styles = StyleSheet.create({
     marginHorizontal: 2,
   },
   chartContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
     marginVertical: boxModelSize.twenty,
+    paddingHorizontal: boxModelSize.ten,
+  },
+  chartWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  legendContainer: {
+    flex: 1,
+    backgroundColor: colors.white,
+    paddingHorizontal: boxModelSize.ten,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: boxModelSize.eight,
+    backgroundColor: colors.white,
+    // borderBottomWidth: 1,
+    // borderBottomColor: colors.lightBlue,
+  },
+  legendColor: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: boxModelSize.eight,
+  },
+  legendText: {
+    fontSize: fontSize.p,
+    color: colors.black,
+    flex: 1,
+    marginRight: boxModelSize.five,
+  },
+  legendAmount: {
+    fontSize: fontSize.p,
+    color: colors.grayPrimary,
+    fontWeight: '500',
   },
   chartPlaceholder: {
     height: 200,
     justifyContent: 'center',
     alignItems: 'center',
   },
+  donutContainer: {
+    backgroundColor: colors.white,
+    borderRadius: 12,
+    padding: boxModelSize.fifteen,
+    shadowColor: colors.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  centerLabel: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: boxModelSize.five,
+  },
   pieCenterText: {
     fontSize: fontSize.p,
-    fontWeight: 'bold',
+    fontWeight: '600',
     color: colors.black,
+    textAlign: 'center',
+  },
+  pieTotalAmount: {
+    fontSize: fontSize.h3,
+    fontWeight: 'bold',
+    marginTop: boxModelSize.five,
+    textAlign: 'center',
   },
   noDataText: {
     fontSize: fontSize.p,
